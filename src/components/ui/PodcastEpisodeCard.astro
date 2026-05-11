@@ -1,0 +1,12 @@
+---
+import type { MediaCardItem } from "../../data/media";
+import BaseMediaCard from "./BaseMediaCard.astro";
+
+interface Props {
+  item: MediaCardItem;
+}
+
+const { item } = Astro.props;
+---
+
+<BaseMediaCard item={item} label="Podcast" ariaPrefix="Listen to" />

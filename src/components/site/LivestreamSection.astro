@@ -1,0 +1,27 @@
+---
+import type { MediaCardItem } from "../../data/media";
+import SectionHeading from "../ui/SectionHeading.astro";
+import LivestreamCard from "../ui/LivestreamCard.astro";
+
+interface Props {
+  streams: MediaCardItem[];
+}
+
+const { streams } = Astro.props;
+---
+
+<section id="schedule" class="space-y-8">
+  <SectionHeading
+    kicker="Recent Livestreams"
+    title="Catch Up on Recent Broadcasts"
+    subtitle="Missed a stream? Jump into the latest sessions and keep your progress moving."
+  />
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      streams.map((stream) => (
+        <LivestreamCard item={stream} />
+      ))
+    }
+  </div>
+</section>

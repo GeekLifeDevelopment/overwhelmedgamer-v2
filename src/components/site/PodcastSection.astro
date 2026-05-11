@@ -1,0 +1,37 @@
+---
+import type { MediaCardItem } from "../../data/media";
+import type { PromoBlock } from "../../data/site";
+import SectionHeading from "../ui/SectionHeading.astro";
+import PodcastEpisodeCard from "../ui/PodcastEpisodeCard.astro";
+
+interface Props {
+  feature: PromoBlock;
+  episodes: MediaCardItem[];
+}
+
+const { feature, episodes } = Astro.props;
+---
+
+<section id="podcast" class="space-y-8">
+  <SectionHeading
+    kicker="Video Podcast Episodes"
+    title="Recent Podcast Uploads"
+    subtitle="Latest video podcast episodes fetched from YouTube at build time with fallback placeholders."
+  />
+
+  <div class="podcast-shell">
+    <div class="space-y-4">
+      <h3 class="font-display text-2xl text-[var(--color-text)]">{feature.title}</h3>
+      <p class="text-sm leading-relaxed text-[var(--color-muted)]">{feature.description}</p>
+      <a href={feature.ctaHref} class="accent-button">{feature.ctaLabel}</a>
+    </div>
+
+    <div class="grid gap-3">
+      {
+        episodes.map((episode) => (
+          <PodcastEpisodeCard item={episode} />
+        ))
+      }
+    </div>
+  </div>
+</section>

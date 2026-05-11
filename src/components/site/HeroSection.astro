@@ -1,22 +1,25 @@
 ---
-import AccentButton from "../react/AccentButton";
-
-interface Props {
-  title: string;
-  description: string;
-  ctaLabel: string;
-  ctaHref: string;
-}
-
-const { title, description, ctaLabel, ctaHref } = Astro.props;
 ---
 
 <section class="hero-panel">
-  <p class="section-kicker">Focused for busy players</p>
-  <h1 class="hero-title">{title}</h1>
-  <p class="hero-copy">{description}</p>
-  <div class="mt-8 flex flex-wrap gap-4">
-    <AccentButton href={ctaHref}>{ctaLabel}</AccentButton>
-    <a href="#guides" class="ghost-button">Preview Sections</a>
+  <div class="hero-grid">
+    <div>
+      <p class="section-kicker">The Overwhelmed Gamer Creator Hub</p>
+      <h1 class="hero-title">Retro games. Homebrew gems. Backlog chaos.</h1>
+      <p class="hero-copy">
+        The site features reviews, livestreams, podcast episodes, and tools for gamers deciding what
+        to play next.
+      </p>
+
+      <div class="hero-cta-row">
+        <a href="#videos" class="accent-button">Watch Latest Video</a>
+        <a href="#podcast" class="ghost-button">Listen to Podcast</a>
+        <a href="#collector" class="ghost-button hero-cta-highlight">Try OG Collector</a>
+      </div>
+    </div>
+
+    <div class="hero-art-wrap" aria-hidden="true">
+      <img src="/web-logo.png" alt="" class="hero-art-main" loading="eager" decoding="async" />
+    </div>
   </div>
 </section>

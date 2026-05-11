@@ -1,43 +1,48 @@
-# Astro Starter Kit: Minimal
+# The Overwhelmed Gamer Web
+
+Astro + React + Tailwind homepage for The Overwhelmed Gamer.
+
+## Local Development
+
+Install dependencies and start the dev server:
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Build Commands
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```sh
+npm run build
+npm run preview
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## YouTube Data API Build-Time Integration
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Homepage media sections are fetched at build time using playlist IDs:
 
-Any static assets, like images, can be placed in the `public/` directory.
+- Latest Reviews
+- Recent Livestreams
+- Video Podcast Episodes
 
-## 🧞 Commands
+The build uses a local cache file at `.cache/youtube-homepage.json` to reduce API requests.
 
-All commands are run from the root of the project, from a terminal:
+### Required Environment Variables
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+Copy `.env.example` to `.env` and fill values:
 
-## 👀 Want to learn more?
+- `YOUTUBE_DATA_API_KEY`
+- `YOUTUBE_REVIEWS_PLAYLIST_ID`
+- `YOUTUBE_LIVESTREAMS_PLAYLIST_ID`
+- `YOUTUBE_PODCAST_PLAYLIST_ID`
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### Optional Environment Variables
+
+- `YOUTUBE_HOMEPAGE_LIMIT`
+	- Clamped between 3 and 6
+	- Default is 3
+- `YOUTUBE_CACHE_TTL_MINUTES`
+	- Default is 45 minutes
+
+If any required YouTube variable is missing or the API request fails, homepage sections fall back to local placeholder data in `src/data/media.ts`.

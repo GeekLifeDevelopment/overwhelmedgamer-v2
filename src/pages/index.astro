@@ -1,30 +1,55 @@
 ---
-import FeatureGrid from "../components/site/FeatureGrid.astro";
+import GamingToolsSection from "../components/site/GamingToolsSection.astro";
 import HeroSection from "../components/site/HeroSection.astro";
+import LivestreamSection from "../components/site/LivestreamSection.astro";
+import OgCollectorSection from "../components/site/OgCollectorSection.astro";
+import PodcastSection from "../components/site/PodcastSection.astro";
+import SiteFooter from "../components/site/SiteFooter.astro";
 import SiteHeader from "../components/site/SiteHeader.astro";
-import SectionHeading from "../components/ui/SectionHeading.astro";
-import { featuredModules, navItems, siteMeta } from "../data/site";
+import VideoSection from "../components/site/VideoSection.astro";
+import {
+	latestPodcastEpisodes,
+	latestYouTubeVideos as fallbackVideos,
+	recentLivestreams
+} from "../data/media";
+import {
+  gamingTools,
+  navItems,
+  ogCollectorPromo,
+  podcastFeature,
+	siteMeta
+} from "../data/site";
+import { getLatestLivestreams, getLatestVideos } from "../lib/youtube";
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const SECTION_CARD_LIMIT = 3;
+
+const fetchedVideos = await getLatestVideos(SECTION_CARD_LIMIT);
+const latestVideos = (fetchedVideos.length > 0 ? fetchedVideos : fallbackVideos).slice(
+	0,
+	SECTION_CARD_LIMIT
+);
+
+const fetchedStreams = await getLatestLivestreams(SECTION_CARD_LIMIT);
+const latestStreams = (fetchedStreams.length > 0 ? fetchedStreams : recentLivestreams).slice(
+	0,
+	SECTION_CARD_LIMIT
+);
+const latestEpisodes = latestPodcastEpisodes.slice(0, SECTION_CARD_LIMIT);
 ---
 
 <BaseLayout title={siteMeta.title} description={siteMeta.description}>
 	<SiteHeader brand={siteMeta.title} navItems={navItems} />
 
-	<main class="mx-auto flex w-full max-w-6xl flex-col gap-20 px-5 pb-20 pt-8 md:px-8 md:pt-10">
-		<HeroSection
-			title={siteMeta.title}
-			description={siteMeta.description}
-			ctaLabel={siteMeta.ctaLabel}
-			ctaHref={siteMeta.ctaHref}
-		/>
+	<main class="mx-auto flex w-full max-w-6xl flex-col gap-16 px-5 pb-20 pt-8 md:px-8 md:pt-10">
+		<HeroSection />
 
-		<section id="guides" class="space-y-8">
-			<SectionHeading
-				kicker="Homepage foundation"
-				title="Reusable Blocks, Ready to Expand"
-				subtitle="This first pass is intentionally component-driven: global shell, navigation, hero, and feature cards. Add sections and content without rebuilding structure."
-			/>
-			<FeatureGrid items={featuredModules} />
-		</section>
+		<VideoSection videos={latestVideos} />
+		<LivestreamSection streams={latestStreams} />
+		<PodcastSection feature={podcastFeature} episodes={latestEpisodes} />
+		<GamingToolsSection tools={gamingTools} />
+		<OgCollectorSection promo={ogCollectorPromo} />
 	</main>
+
+	<SiteFooter brand={siteMeta.title} />
 </BaseLayout>
