@@ -1,0 +1,36 @@
+---
+import type { PromoBlock } from "../../data/site";
+
+interface Props {
+  promo: PromoBlock;
+}
+
+const { promo } = Astro.props;
+
+const highlights = [
+  "Track physical and digital games in one organized collection view.",
+  "Check recent pricing signals before buying, selling, or trading.",
+  "Tag backlog priorities by mood, time, and completion goals.",
+  "Generate a practical next-play shortlist when choice fatigue hits."
+];
+---
+
+<section id="collector" class="collector-panel">
+  <p class="section-kicker">Collector Companion</p>
+  <h2 class="mt-3 font-display text-3xl text-[var(--color-text)] sm:text-4xl">
+    {promo.title} for The Overwhelmed Gamer Flow
+  </h2>
+  <p class="mt-4 max-w-2xl text-base leading-relaxed text-[var(--color-muted)]">{promo.description}</p>
+
+  <ul class="collector-list" aria-label="OG Collector capabilities">
+    {
+      highlights.map((item) => (
+        <li>{item}</li>
+      ))
+    }
+  </ul>
+
+  <div class="mt-6">
+    <a href={promo.ctaHref} class="collector-cta">{promo.ctaLabel}</a>
+  </div>
+</section>

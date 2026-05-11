@@ -1,0 +1,27 @@
+---
+import type { MediaCardItem } from "../../data/media";
+import SectionHeading from "../ui/SectionHeading.astro";
+import YouTubeVideoCard from "../ui/YouTubeVideoCard.astro";
+
+interface Props {
+  videos: MediaCardItem[];
+}
+
+const { videos } = Astro.props;
+---
+
+<section id="videos" class="space-y-8">
+  <SectionHeading
+    kicker="Latest Reviews"
+    title="Newest Review Videos"
+    subtitle="Fresh review drops from The Overwhelmed Gamer, loaded at build time from YouTube."
+  />
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      videos.map((video) => (
+        <YouTubeVideoCard item={video} />
+      ))
+    }
+  </div>
+</section>

@@ -1,0 +1,30 @@
+---
+import type { StreamSlot } from "../../data/site";
+import SectionHeading from "../ui/SectionHeading.astro";
+
+interface Props {
+  slots: StreamSlot[];
+}
+
+const { slots } = Astro.props;
+---
+
+<section id="schedule" class="space-y-8">
+  <SectionHeading
+    kicker="Stream Schedule"
+    title="Catch the Next Live Session"
+    subtitle="Regular stream blocks focused on practical progress, not endless grind."
+  />
+
+  <div class="schedule-shell">
+    {
+      slots.map((slot) => (
+        <div class="schedule-row">
+          <p class="font-display text-xl text-[var(--color-text)]">{slot.day}</p>
+          <p class="text-sm uppercase tracking-[0.12em] text-[var(--color-accent)]">{slot.time}</p>
+          <p class="text-sm text-[var(--color-muted)]">{slot.focus}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>

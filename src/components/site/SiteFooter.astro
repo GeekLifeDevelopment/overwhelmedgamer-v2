@@ -1,0 +1,27 @@
+---
+interface Props {
+  brand: string;
+}
+
+const { brand } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="footer-shell">
+  <div class="mx-auto flex w-full max-w-6xl flex-col gap-5 px-5 py-10 md:flex-row md:items-center md:justify-between md:px-8">
+    <div>
+      <p class="font-display text-lg tracking-[0.18em] text-[var(--color-text)]">{brand}</p>
+      <p class="mt-2 text-sm text-[var(--color-muted)]">Creator hub for overwhelmed gamers.</p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.12em] text-[var(--color-muted)]">
+      <a href="#videos" class="footer-link">YouTube</a>
+      <a href="#podcast" class="footer-link">Podcast</a>
+      <a href="#schedule" class="footer-link">Live Streams</a>
+      <a href="#tools" class="footer-link">Tools</a>
+    </div>
+  </div>
+  <p class="border-t border-white/10 px-5 py-4 text-xs text-[var(--color-muted)] md:px-8">
+    © {year} {brand}. All rights reserved.
+  </p>
+</footer>

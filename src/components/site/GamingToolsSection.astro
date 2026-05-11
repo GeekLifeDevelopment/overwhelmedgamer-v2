@@ -1,0 +1,33 @@
+---
+import type { ToolTeaser } from "../../data/site";
+import SectionHeading from "../ui/SectionHeading.astro";
+
+interface Props {
+  tools: ToolTeaser[];
+}
+
+const { tools } = Astro.props;
+---
+
+<section id="tools" class="space-y-8">
+  <SectionHeading
+    kicker="Gaming Tools Teaser"
+    title="Future Tools for Smarter Game Decisions"
+    subtitle="These tools are planned as practical SEO landing experiences that help players make better next-game choices quickly."
+  />
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      tools.map((tool) => (
+        <article class="tool-card">
+          <p class="chip">{tool.status}</p>
+          <h3 class="mt-3 font-display text-xl text-[var(--color-text)]">{tool.name}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[var(--color-muted)]">{tool.summary}</p>
+          <a href={tool.ctaHref} class="tool-cta">
+            {tool.ctaLabel}
+          </a>
+        </article>
+      ))
+    }
+  </div>
+</section>
