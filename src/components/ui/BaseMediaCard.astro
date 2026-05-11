@@ -8,19 +8,19 @@ interface Props {
 }
 
 const { item, label, ariaPrefix } = Astro.props;
+const isExternalLink = /^https?:\/\//.test(item.externalLink);
 
 const TRUNCATE_LENGTH = 120;
 const desc = item.description ?? "";
 const isLong = desc.length > TRUNCATE_LENGTH;
 const shortDesc = isLong ? desc.slice(0, TRUNCATE_LENGTH).trimEnd() + "…" : desc;
 ---
-
 <a
   href={item.externalLink}
   class="media-card"
   aria-label={`${ariaPrefix} ${item.title}`}
-  target="_blank"
-  rel="noopener noreferrer"
+  target={isExternalLink ? "_blank" : undefined}
+  rel={isExternalLink ? "noopener noreferrer" : undefined}
 >
   <div class="media-thumbnail-wrap">
     <img src={item.thumbnail} alt="" class="media-thumbnail" loading="lazy" decoding="async" />

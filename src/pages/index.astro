@@ -20,6 +20,7 @@ import {
 	siteMeta
 } from "../data/site";
 import { getLatestLivestreams, getLatestVideos } from "../lib/youtube";
+import { getLatestPodcastEpisodes } from "../lib/podcast";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const SECTION_CARD_LIMIT = 3;
@@ -35,7 +36,11 @@ const latestStreams = (fetchedStreams.length > 0 ? fetchedStreams : recentLivest
 	0,
 	SECTION_CARD_LIMIT
 );
-const latestEpisodes = latestPodcastEpisodes.slice(0, SECTION_CARD_LIMIT);
+const fetchedEpisodes = await getLatestPodcastEpisodes(SECTION_CARD_LIMIT);
+const latestEpisodes = (fetchedEpisodes.length > 0 ? fetchedEpisodes : latestPodcastEpisodes).slice(
+	0,
+	SECTION_CARD_LIMIT
+);
 ---
 
 <BaseLayout title={siteMeta.title} description={siteMeta.description}>
