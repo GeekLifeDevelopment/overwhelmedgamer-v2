@@ -1,17 +1,30 @@
 ---
-
+import FeatureGrid from "../components/site/FeatureGrid.astro";
+import HeroSection from "../components/site/HeroSection.astro";
+import SiteHeader from "../components/site/SiteHeader.astro";
+import SectionHeading from "../components/ui/SectionHeading.astro";
+import { featuredModules, navItems, siteMeta } from "../data/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title={siteMeta.title} description={siteMeta.description}>
+	<SiteHeader brand={siteMeta.title} navItems={navItems} />
+
+	<main class="mx-auto flex w-full max-w-6xl flex-col gap-20 px-5 pb-20 pt-8 md:px-8 md:pt-10">
+		<HeroSection
+			title={siteMeta.title}
+			description={siteMeta.description}
+			ctaLabel={siteMeta.ctaLabel}
+			ctaHref={siteMeta.ctaHref}
+		/>
+
+		<section id="guides" class="space-y-8">
+			<SectionHeading
+				kicker="Homepage foundation"
+				title="Reusable Blocks, Ready to Expand"
+				subtitle="This first pass is intentionally component-driven: global shell, navigation, hero, and feature cards. Add sections and content without rebuilding structure."
+			/>
+			<FeatureGrid items={featuredModules} />
+		</section>
+	</main>
+</BaseLayout>

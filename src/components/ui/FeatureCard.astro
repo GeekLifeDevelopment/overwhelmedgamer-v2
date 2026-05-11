@@ -1,0 +1,15 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  tag: string;
+}
+
+const { title, description, tag } = Astro.props;
+---
+
+<article class="feature-card">
+  <p class="chip">{tag}</p>
+  <h3 class="font-display text-2xl text-[var(--color-text)]">{title}</h3>
+  <p class="mt-2 text-sm leading-relaxed text-[var(--color-muted)]">{description}</p>
+</article>

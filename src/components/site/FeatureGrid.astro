@@ -1,0 +1,20 @@
+---
+import type { FeatureItem } from "../../data/site";
+import FeatureCard from "../ui/FeatureCard.astro";
+
+interface Props {
+  items: FeatureItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<section id="content-grid" class="space-y-8" aria-label="Featured modules">
+  <div class="grid gap-4 md:grid-cols-3">
+    {
+      items.map((item) => (
+        <FeatureCard title={item.title} description={item.description} tag={item.tag} />
+      ))
+    }
+  </div>
+</section>

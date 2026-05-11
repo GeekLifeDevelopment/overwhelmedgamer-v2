@@ -1,0 +1,29 @@
+---
+import type { NavItem } from "../../data/site";
+
+interface Props {
+  brand: string;
+  navItems: NavItem[];
+}
+
+const { brand, navItems } = Astro.props;
+---
+
+<header class="site-header">
+  <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-8 px-5 py-6 md:px-8">
+    <a href="/" class="font-display text-lg tracking-[0.22em] text-[var(--color-text)]">{brand}</a>
+    <nav aria-label="Primary">
+      <ul class="flex items-center gap-2 sm:gap-5">
+        {
+          navItems.map((item) => (
+            <li>
+              <a href={item.href} class="nav-link">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

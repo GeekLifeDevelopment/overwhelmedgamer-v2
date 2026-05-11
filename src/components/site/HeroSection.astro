@@ -1,0 +1,22 @@
+---
+import AccentButton from "../react/AccentButton";
+
+interface Props {
+  title: string;
+  description: string;
+  ctaLabel: string;
+  ctaHref: string;
+}
+
+const { title, description, ctaLabel, ctaHref } = Astro.props;
+---
+
+<section class="hero-panel">
+  <p class="section-kicker">Focused for busy players</p>
+  <h1 class="hero-title">{title}</h1>
+  <p class="hero-copy">{description}</p>
+  <div class="mt-8 flex flex-wrap gap-4">
+    <AccentButton href={ctaHref}>{ctaLabel}</AccentButton>
+    <a href="#guides" class="ghost-button">Preview Sections</a>
+  </div>
+</section>
