@@ -1,0 +1,77 @@
+---
+import HeroSection from "../../components/site/HeroSection.astro";
+import SiteFooter from "../../components/site/SiteFooter.astro";
+import SiteHeader from "../../components/site/SiteHeader.astro";
+import PodcastEpisodeCard from "../../components/ui/PodcastEpisodeCard.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { latestPodcastEpisodes as fallbackPodcastEpisodes } from "../../data/media";
+import { navItems, podcastFeature, siteMeta } from "../../data/site";
+import { getLatestPodcastEpisodes } from "../../lib/podcast";
+
+const SECTION_CARD_LIMIT = 12;
+const fetchedEpisodes = await getLatestPodcastEpisodes(SECTION_CARD_LIMIT);
+const episodes = (fetchedEpisodes.length > 0 ? fetchedEpisodes : fallbackPodcastEpisodes).slice(0, SECTION_CARD_LIMIT);
+const featuredEpisode = episodes[0] ?? fallbackPodcastEpisodes[0];
+---
+
+<BaseLayout title={`${siteMeta.title} Podcast`} description={siteMeta.description}>
+  <SiteHeader brand={siteMeta.title} navItems={navItems} />
+
+  <main class="mx-auto flex w-full max-w-6xl flex-col gap-16 px-5 pb-20 pt-8 md:px-8 md:pt-10">
+    <section class="hero-panel">
+      <div class="hero-grid">
+        <div>
+          <p class="section-kicker">Podcast Hub</p>
+          <h1 class="hero-title">{podcastFeature.title}</h1>
+          <p class="hero-copy">{podcastFeature.description}</p>
+          <div class="hero-cta-row">
+            <a href="#latest-episodes" class="accent-button">Jump to Episodes</a>
+            <a href="/" class="ghost-button">Back to Home</a>
+          </div>
+        </div>
+
+        <div class="hero-art-wrap">
+          <img src={featuredEpisode.thumbnail} alt="" class="hero-art-main" loading="eager" decoding="async" />
+        </div>
+      </div>
+    </section>
+
+    <section id="latest-episodes" class="space-y-8">
+      <div class="grid gap-4 lg:grid-cols-[1.1fr_0.9fr] lg:items-stretch">
+        <a href={featuredEpisode.externalLink} class="media-card flex h-full flex-col justify-between" aria-label={`Open ${featuredEpisode.title}`}>
+          <div class="media-thumbnail-wrap">
+            <img src={featuredEpisode.thumbnail} alt="" class="media-thumbnail" loading="lazy" decoding="async" />
+            <span class="media-label">Featured</span>
+          </div>
+
+          <div class="space-y-3">
+            <h2 class="font-display text-2xl text-[var(--color-text)] sm:text-3xl">{featuredEpisode.title}</h2>
+            <p class="text-sm leading-relaxed text-[var(--color-muted)]">{featuredEpisode.excerpt ?? featuredEpisode.description}</p>
+            <p class="text-xs uppercase tracking-[0.13em] text-[var(--color-muted)]">{featuredEpisode.date} • {featuredEpisode.platform}</p>
+          </div>
+        </a>
+
+        <div class="feature-card flex h-full flex-col justify-between gap-6">
+          <div class="space-y-4">
+            <span class="chip">Listen Anywhere</span>
+            <h2 class="font-display text-3xl text-[var(--color-text)]">Play audio right on the page</h2>
+            <p class="max-w-2xl text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">
+              Open any episode, hit play, and keep browsing without leaving the site.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <a href={featuredEpisode.externalLink} class="accent-button">Open Episode Page</a>
+            <a href={featuredEpisode.sourceLink ?? featuredEpisode.externalLink} class="ghost-button">Open Original Feed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {episodes.slice(1).map((episode) => <PodcastEpisodeCard item={episode} />)}
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter brand={siteMeta.title} />
+</BaseLayout>

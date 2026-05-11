@@ -2,7 +2,6 @@
 import type { MediaCardItem } from "../../data/media";
 import type { PromoBlock } from "../../data/site";
 import SectionHeading from "../ui/SectionHeading.astro";
-import PodcastEpisodeCard from "../ui/PodcastEpisodeCard.astro";
 
 interface Props {
   feature: PromoBlock;
@@ -10,27 +9,140 @@ interface Props {
 }
 
 const { feature, episodes } = Astro.props;
+
+const featuredEpisode = episodes[0];
+const previousEpisodes = episodes.slice(1, 4);
+
+const SECTION_CUTOFF_PATTERNS = [
+  /watch the video podcast/i,
+  /connect with jason/i,
+  /streaming/i,
+  /join the community/i,
+  /socials?/i,
+  /don.?t forget to subscribe/i
+];
+
+function stripRawUrls(input: string): string {
+  return input.replace(/(?:https?:\/\/|www\.)\S+/gi, " ");
+}
+
+function normalizeDescription(input?: string): string {
+  const fallback = "New episode from The Overwhelmed Gamer podcast.";
+  if (!input?.trim()) return fallback;
+
+  let cleaned = stripRawUrls(input)
+    .replace(/\s+/g, " ")
+    .replace(/\s*[-|:]+\s*/g, " ")
+    .trim();
+
+  for (const pattern of SECTION_CUTOFF_PATTERNS) {
+    const matchIndex = cleaned.search(pattern);
+    if (matchIndex > 70) {
+      cleaned = cleaned.slice(0, matchIndex).trim();
+      break;
+    }
+  }
+
+  return cleaned || fallback;
+}
+
+function truncateAtWord(input: string, limit: number): string {
+  if (input.length <= limit) return input;
+
+  const window = input.slice(0, limit + 1);
+  const splitAt = window.lastIndexOf(" ");
+  const safeCut = splitAt > Math.floor(limit * 0.6) ? splitAt : limit;
+
+  return `${window.slice(0, safeCut).trimEnd()}…`;
+}
+
+const featuredDescription = truncateAtWord(
+  normalizeDescription(featuredEpisode?.excerpt ?? featuredEpisode?.description ?? feature.description),
+  220
+);
 ---
 
 <section id="podcast" class="space-y-8">
   <SectionHeading
-    kicker="Video Podcast Episodes"
-    title="Recent Podcast Uploads"
-    subtitle="Latest video podcast episodes fetched from YouTube at build time with fallback placeholders."
+    kicker="Podcast"
+    title="Latest from The Overwhelmed Gamer Podcast"
+    subtitle="Retro reviews, homebrew discoveries, backlog talk, and gaming stories from the show."
   />
 
-  <div class="podcast-shell">
-    <div class="space-y-4">
-      <h3 class="font-display text-2xl text-[var(--color-text)]">{feature.title}</h3>
-      <p class="text-sm leading-relaxed text-[var(--color-muted)]">{feature.description}</p>
-      <a href={feature.ctaHref} class="accent-button">{feature.ctaLabel}</a>
-    </div>
+  <div class="grid gap-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-stretch">
+    <article class="feature-card flex h-full flex-col gap-5 overflow-hidden p-4 sm:p-5">
+      {featuredEpisode ? (
+        <>
+          <a
+            href={featuredEpisode.externalLink}
+            class="media-thumbnail-wrap mb-0 block"
+            aria-label={`Open ${featuredEpisode.title}`}
+          >
+            <img
+              src={featuredEpisode.thumbnail}
+              alt=""
+              class="media-thumbnail"
+              loading="lazy"
+              decoding="async"
+            />
+            <span class="media-label">Latest Episode</span>
+          </a>
 
-    <div class="grid gap-3">
+          <div class="space-y-3">
+            <h3 class="font-display text-2xl text-[var(--color-text)] sm:text-3xl">
+              {featuredEpisode.title}
+            </h3>
+            <p class="text-xs uppercase tracking-[0.13em] text-[var(--color-muted)]">
+              {featuredEpisode.date} • {featuredEpisode.platform}
+            </p>
+            <p class="text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">
+              {featuredDescription}
+            </p>
+          </div>
+
+          <div class="mt-auto flex flex-wrap gap-3 pt-1">
+            <a href={featuredEpisode.externalLink} class="accent-button">Listen / Open Episode</a>
+            <a href="/podcast" class="ghost-button">View All Episodes</a>
+          </div>
+        </>
+      ) : (
+        <>
+          <h3 class="font-display text-2xl text-[var(--color-text)] sm:text-3xl">{feature.title}</h3>
+          <p class="text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">{feature.description}</p>
+          <div class="mt-auto">
+            <a href="/podcast" class="accent-button">View All Episodes</a>
+          </div>
+        </>
+      )}
+    </article>
+
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
       {
-        episodes.map((episode) => (
-          <PodcastEpisodeCard item={episode} />
-        ))
+        previousEpisodes.map((episode) => {
+          const cardDescription = truncateAtWord(
+            normalizeDescription(episode.excerpt ?? episode.description),
+            120
+          );
+
+          return (
+            <article class="media-card flex h-full min-h-[17.5rem] flex-col gap-3">
+              <a href={episode.externalLink} class="media-thumbnail-wrap mb-0 block" aria-label={`Open ${episode.title}`}>
+                <img src={episode.thumbnail} alt="" class="media-thumbnail" loading="lazy" decoding="async" />
+                <span class="media-label">Podcast</span>
+              </a>
+
+              <h4 class="font-display text-xl text-[var(--color-text)]">{episode.title}</h4>
+              <p class="text-xs uppercase tracking-[0.13em] text-[var(--color-muted)]">
+                {episode.date} • {episode.platform}
+              </p>
+              <p class="text-sm leading-relaxed text-[var(--color-muted)]">{cardDescription}</p>
+
+              <div class="mt-auto pt-1">
+                <a href={episode.externalLink} class="tool-cta">Open Episode</a>
+              </div>
+            </article>
+          );
+        })
       }
     </div>
   </div>

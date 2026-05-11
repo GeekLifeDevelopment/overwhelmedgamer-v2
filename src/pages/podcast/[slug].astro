@@ -1,0 +1,211 @@
+---
+import SiteFooter from "../../components/site/SiteFooter.astro";
+import SiteHeader from "../../components/site/SiteHeader.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { latestPodcastEpisodes as fallbackPodcastEpisodes } from "../../data/media";
+import { navItems, siteMeta } from "../../data/site";
+import { getLatestPodcastEpisodes, PODCAST_PLATFORM_LINKS } from "../../lib/podcast";
+
+export async function getStaticPaths() {
+  const episodes = await getLatestPodcastEpisodes(100);
+
+  return episodes.map((episode) => ({
+    params: { slug: episode.slug ?? "episode" },
+    props: { episode }
+  }));
+}
+
+const { episode } = Astro.props;
+const currentEpisode = episode ?? fallbackPodcastEpisodes[0];
+const allEpisodes = await getLatestPodcastEpisodes(12);
+const relatedEpisodes = allEpisodes
+  .filter((candidate) => candidate.slug && candidate.slug !== currentEpisode.slug)
+  .slice(0, 3);
+
+const episodeSummary =
+  currentEpisode.summary ??
+  currentEpisode.description ??
+  "Latest episode from The Overwhelmed Gamer podcast.";
+const notesHtml = currentEpisode.notesHtml?.trim() || "<p>More notes for this episode are coming soon.</p>";
+const notesLength = currentEpisode.notesText?.length ?? 0;
+const shouldCollapseNotes = notesLength > 1500;
+
+const platformLinks = {
+  spotify: PODCAST_PLATFORM_LINKS.spotify,
+  apple: PODCAST_PLATFORM_LINKS.apple,
+  youtube: PODCAST_PLATFORM_LINKS.youtube,
+  rss: PODCAST_PLATFORM_LINKS.rss
+};
+---
+
+<BaseLayout title={`${currentEpisode.title} | ${siteMeta.title}`} description={episodeSummary}>
+  <SiteHeader brand={siteMeta.title} navItems={navItems} />
+
+  <main class="mx-auto flex w-full max-w-5xl flex-col gap-7 px-5 pb-16 pt-8 md:gap-9 md:px-8 md:pt-10">
+    <a href="/podcast" class="collector-cta self-start">Back to Podcast Hub</a>
+
+    <section class="hero-panel episode-hero-panel">
+      <div class="grid gap-6 md:grid-cols-[1.1fr_0.9fr] md:items-center">
+        <div class="space-y-4">
+          <p class="section-kicker">Podcast Episode</p>
+          <h1 class="episode-title">{currentEpisode.title}</h1>
+          <p class="text-xs uppercase tracking-[0.14em] text-[var(--color-muted)]">
+            {currentEpisode.date} • {currentEpisode.platform}
+          </p>
+          <p class="episode-summary">{episodeSummary}</p>
+
+          <div class="hero-cta-row !mt-2">
+            {currentEpisode.audioUrl ? (
+              <a href="#listen-now" class="accent-button">Listen / Open Episode</a>
+            ) : null}
+            <a href="/podcast" class="ghost-button">View All Episodes</a>
+          </div>
+        </div>
+
+        <div class="episode-art-card">
+          <img
+            src={currentEpisode.thumbnail}
+            alt=""
+            class="episode-art"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+      </div>
+    </section>
+
+    {currentEpisode.audioUrl ? (
+      <section id="listen-now" class="feature-card space-y-4">
+        <div class="space-y-1">
+          <p class="section-kicker">Listen Now</p>
+          <h2 class="font-display text-2xl text-[var(--color-text)]">Play this episode right here</h2>
+        </div>
+
+        <audio controls preload="none" class="w-full podcast-player">
+          <source src={currentEpisode.audioUrl} type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      </section>
+    ) : null}
+
+    <section class="feature-card space-y-4">
+      <p class="section-kicker">Listen On</p>
+      <div class="flex flex-wrap gap-2">
+        <a href={platformLinks.spotify ?? "#"} class="tool-cta" target="_blank" rel="noopener noreferrer">Spotify</a>
+        <a href={platformLinks.apple ?? "#"} class="tool-cta" target="_blank" rel="noopener noreferrer">Apple Podcasts</a>
+        <a href={platformLinks.youtube ?? "#"} class="tool-cta" target="_blank" rel="noopener noreferrer">YouTube</a>
+        <a href={platformLinks.rss} class="tool-cta" target="_blank" rel="noopener noreferrer">RSS Feed</a>
+      </div>
+    </section>
+
+    <section class="feature-card space-y-4">
+      <p class="section-kicker">Episode Notes</p>
+      {
+        shouldCollapseNotes ? (
+          <details class="episode-notes-collapsible text-[var(--color-muted)]" open>
+            <summary class="tool-cta inline-flex cursor-pointer">Read More</summary>
+            <div class="episode-notes prose prose-invert max-w-none mt-4" set:html={notesHtml}></div>
+          </details>
+        ) : (
+          <div class="episode-notes prose prose-invert max-w-none" set:html={notesHtml}></div>
+        )
+      }
+    </section>
+
+    <section class="space-y-4">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="font-display text-2xl text-[var(--color-text)]">Related Episodes</h2>
+        <a href="/podcast" class="tool-cta">See All</a>
+      </div>
+
+      <div class="grid gap-3 md:grid-cols-3">
+        {
+          relatedEpisodes.map((related) => (
+            <a href={related.externalLink} class="media-card flex h-full flex-col gap-3" aria-label={`Open ${related.title}`}>
+              <div class="media-thumbnail-wrap mb-0">
+                <img src={related.thumbnail} alt="" class="media-thumbnail" loading="lazy" decoding="async" />
+              </div>
+
+              <h3 class="font-display text-xl text-[var(--color-text)]">{related.title}</h3>
+              <p class="text-xs uppercase tracking-[0.13em] text-[var(--color-muted)]">{related.date}</p>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter brand={siteMeta.title} />
+</BaseLayout>
+
+<style>
+  .episode-hero-panel {
+    padding: clamp(1.25rem, 2.8vw, 2rem);
+  }
+
+  .episode-title {
+    margin: 0;
+    max-width: 22ch;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 4.2vw, 3.05rem);
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+
+  .episode-summary {
+    margin: 0;
+    max-width: 62ch;
+    color: var(--color-muted);
+    line-height: 1.65;
+    font-size: clamp(0.96rem, 1.75vw, 1.07rem);
+  }
+
+  .episode-art-card {
+    border-radius: 0.95rem;
+    border: 1px solid color-mix(in srgb, var(--color-accent) 42%, var(--color-border));
+    overflow: hidden;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 122, 0, 0.08));
+    box-shadow: 0 10px 30px rgba(255, 122, 0, 0.18);
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  .episode-art-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 34px rgba(255, 122, 0, 0.22);
+  }
+
+  .episode-art {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+  }
+
+  .podcast-player {
+    border-radius: 999px;
+    filter: saturate(0.95);
+  }
+
+  .episode-notes :global(p) {
+    margin: 0.85rem 0;
+    line-height: 1.72;
+    color: var(--color-muted);
+  }
+
+  .episode-notes :global(a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    word-break: break-word;
+  }
+
+  .episode-notes-collapsible summary::-webkit-details-marker {
+    display: none;
+  }
+
+  @media (max-width: 48rem) {
+    .episode-title {
+      max-width: 100%;
+    }
+  }
+</style>

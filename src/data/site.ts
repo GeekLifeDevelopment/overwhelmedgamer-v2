@@ -57,7 +57,7 @@ export const siteMeta = {
 export const navItems: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "Videos", href: "#videos" },
-  { label: "Podcast", href: "#podcast" },
+  { label: "Podcast", href: "/podcast" },
   { label: "Schedule", href: "#schedule" },
   { label: "Collector", href: "#collector" }
 ];
@@ -109,7 +109,7 @@ export const podcastFeature: PromoBlock = {
   description:
     "Weekly episodes about better game choices, healthier play habits, and creator-side lessons from the grind.",
   ctaLabel: "Listen to Latest",
-  ctaHref: "#"
+  ctaHref: "/podcast"
 };
 
 export const podcastEpisodes: PodcastEpisode[] = [

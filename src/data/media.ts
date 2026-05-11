@@ -5,6 +5,13 @@ export type MediaCardItem = {
   date: string;
   platform: string;
   externalLink: string;
+  slug?: string;
+  audioUrl?: string;
+  excerpt?: string;
+  sourceLink?: string;
+  summary?: string;
+  notesText?: string;
+  notesHtml?: string;
 };
 
 export const latestYouTubeVideos: MediaCardItem[] = [
@@ -75,7 +82,7 @@ export const latestPodcastEpisodes: MediaCardItem[] = [
     thumbnail: "/web-logo.png",
     date: "May 7, 2026",
     platform: "Spotify + Apple",
-    externalLink: "#"
+    externalLink: "/podcast"
   },
   {
     title: "Episode 41: Co-op Nights That Actually Work",
@@ -84,7 +91,7 @@ export const latestPodcastEpisodes: MediaCardItem[] = [
     thumbnail: "/web-logo.png",
     date: "Apr 30, 2026",
     platform: "Spotify + Apple",
-    externalLink: "#"
+    externalLink: "/podcast"
   },
   {
     title: "Episode 40: Gear FOMO vs Real Progress",
@@ -93,6 +100,6 @@ export const latestPodcastEpisodes: MediaCardItem[] = [
     thumbnail: "/web-logo.png",
     date: "Apr 23, 2026",
     platform: "Spotify + Apple",
-    externalLink: "#"
+    externalLink: "/podcast"
   }
 ];
