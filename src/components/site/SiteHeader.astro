@@ -10,9 +10,10 @@ const { brand, navItems } = Astro.props;
 ---
 
 <header class="site-header">
-  <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-8 px-5 py-6 md:px-8">
-    <a href="/" class="font-display text-lg tracking-[0.22em] text-[var(--color-text)]">{brand}</a>
-    <nav aria-label="Primary">
+  <div class="site-header-inner mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 md:px-8 md:py-5">
+    <a href="/" class="font-display text-base tracking-[0.2em] text-[var(--color-text)] sm:text-lg">{brand}</a>
+
+    <nav class="desktop-nav" aria-label="Primary">
       <ul class="flex items-center gap-2 sm:gap-5">
         {
           navItems.map((item) => (
@@ -25,5 +26,38 @@ const { brand, navItems } = Astro.props;
         }
       </ul>
     </nav>
+
+    <details class="mobile-nav">
+      <summary class="mobile-menu-button" aria-label="Toggle navigation menu">
+        <span class="mobile-menu-label">Menu</span>
+        <span class="mobile-menu-icon" aria-hidden="true"></span>
+      </summary>
+
+      <nav class="mobile-menu-panel" aria-label="Mobile Primary">
+        <ul class="mobile-menu-list">
+          {
+            navItems.map((item) => (
+              <li>
+                <a href={item.href} class="mobile-nav-link">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </details>
   </div>
 </header>
+
+<script>
+  const mobileNav = document.querySelector(".mobile-nav");
+  if (mobileNav instanceof HTMLDetailsElement) {
+    const links = mobileNav.querySelectorAll("a");
+    links.forEach((link) => {
+      link.addEventListener("click", () => {
+        mobileNav.open = false;
+      });
+    });
+  }
+</script>
