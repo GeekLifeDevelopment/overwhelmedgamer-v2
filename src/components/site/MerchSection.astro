@@ -1,0 +1,119 @@
+---
+import type { MerchProduct } from "../../lib/fourthwall";
+import { SHOP_URL } from "../../lib/fourthwall";
+
+interface Props {
+  items: MerchProduct[];
+}
+
+const { items } = Astro.props;
+---
+
+<section id="merch" class="space-y-6">
+  <div class="flex items-center justify-between gap-3">
+    <div>
+      <p class="section-kicker">Official Merch</p>
+      <h2 class="font-display text-3xl text-[var(--color-text)] mt-1">Gear Up</h2>
+    </div>
+    <div class="flex gap-2 shrink-0 flex-wrap justify-end">
+      <a href="/merch" class="tool-cta">See All</a>
+      <a
+        href={SHOP_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="tool-cta"
+        aria-label="Browse the full Overwhelmed Gamer store on Fourthwall"
+      >
+        Shop Merch
+      </a>
+    </div>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {items.length === 0 ? (
+      <p class="col-span-full text-sm text-[var(--color-muted)]">
+        <a href="/merch" class="hover:underline text-[var(--color-accent)]">Visit the merch page</a> to shop official Overwhelmed Gamer gear.
+      </p>
+    ) : (
+      items.slice(0, 3).map((item) => (
+        <a
+          href={item.productUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`View ${item.title} on Fourthwall`}
+          class="merch-hp-card"
+        >
+          <div class="merch-hp-image-wrap">
+            <img
+              src={item.imageUrl}
+              alt={item.title}
+              class="merch-hp-image"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+
+          <div class="p-3 space-y-1">
+            <h3 class="font-display text-base text-[var(--color-text)]">{item.title}</h3>
+            {item.price ? (
+              <p class="text-sm font-medium text-[var(--color-accent)]">{item.price}</p>
+            ) : (
+              <p class="text-xs text-[var(--color-muted)]">View on Fourthwall →</p>
+            )}
+        </div>
+      </a>
+    ))
+    )}
+  </div>
+</section>
+
+<style>
+  .merch-hp-card {
+    border: 1px solid var(--color-border);
+    border-radius: 0.95rem;
+    background: linear-gradient(155deg, rgba(255, 255, 255, 0.015), rgba(255, 122, 0, 0.05));
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  .merch-hp-card:hover,
+  .merch-hp-card:focus-visible {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--color-accent) 58%, var(--color-border));
+    box-shadow: 0 10px 24px rgba(255, 122, 0, 0.15);
+  }
+
+  .merch-hp-image-wrap {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background:
+      linear-gradient(145deg, rgba(255, 180, 0, 0.14), rgba(255, 122, 0, 0.22)),
+      linear-gradient(45deg, #1b1b1b, #0f0f0f);
+    overflow: hidden;
+  }
+
+  .merch-hp-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 0.75rem;
+    filter: saturate(0.85) contrast(1.05);
+  }
+
+  .merch-badge {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 180, 0, 0.45);
+    padding: 0.18rem 0.55rem;
+    font-size: 0.67rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #ffd271;
+    background: rgba(0, 0, 0, 0.72);
+  }
+</style>

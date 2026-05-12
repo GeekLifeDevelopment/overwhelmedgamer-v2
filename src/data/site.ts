@@ -56,11 +56,10 @@ export const siteMeta = {
 
 export const navItems: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "Videos", href: "#videos" },
   { label: "Podcast", href: "/podcast" },
-  { label: "Schedule", href: "#schedule" },
-  { label: "Collector", href: "#collector" },
-  { label: "Tools", href: "#tools" },
+  { label: "Tools", href: "/tools" },
+  { label: "Merch", href: "/merch" },
+  
   { label: "Contact", href: "/contact" }
 ];
 

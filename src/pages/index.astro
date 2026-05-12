@@ -2,6 +2,7 @@
 import GamingToolsSection from "../components/site/GamingToolsSection.astro";
 import HeroSection from "../components/site/HeroSection.astro";
 import LivestreamSection from "../components/site/LivestreamSection.astro";
+import MerchSection from "../components/site/MerchSection.astro";
 import OgCollectorSection from "../components/site/OgCollectorSection.astro";
 import PodcastSection from "../components/site/PodcastSection.astro";
 import SiteFooter from "../components/site/SiteFooter.astro";
@@ -19,6 +20,7 @@ import {
   podcastFeature,
 	siteMeta
 } from "../data/site";
+import { getMerchProducts } from "../lib/fourthwall";
 import { getLatestLivestreams, getLatestVideos } from "../lib/youtube";
 import { getLatestPodcastEpisodes } from "../lib/podcast";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -41,6 +43,8 @@ const latestEpisodes = (fetchedEpisodes.length > 0 ? fetchedEpisodes : latestPod
 	0,
 	SECTION_CARD_LIMIT
 );
+
+const featuredMerch = await getMerchProducts(SECTION_CARD_LIMIT);
 ---
 
 <BaseLayout title={siteMeta.title} description={siteMeta.description}>
@@ -52,6 +56,7 @@ const latestEpisodes = (fetchedEpisodes.length > 0 ? fetchedEpisodes : latestPod
 		<VideoSection videos={latestVideos} />
 		<LivestreamSection streams={latestStreams} />
 		<PodcastSection feature={podcastFeature} episodes={latestEpisodes} />
+		<MerchSection items={featuredMerch} />
 		<GamingToolsSection tools={gamingTools} />
 		<OgCollectorSection promo={ogCollectorPromo} />
 	</main>
