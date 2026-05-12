@@ -1,0 +1,233 @@
+---
+import SiteFooter from "../components/site/SiteFooter.astro";
+import SiteHeader from "../components/site/SiteHeader.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { navItems, siteMeta } from "../data/site";
+
+const pageTitle = "Contact The Overwhelmed Gamer";
+const pageDescription = "Contact The Overwhelmed Gamer for homebrew game reviews, indie game coverage, podcast interviews, livestream requests, sponsorships, and collaborations.";
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <SiteHeader brand={siteMeta.title} navItems={navItems} />
+
+  <main class="mx-auto flex w-full max-w-5xl flex-col gap-8 px-5 pb-16 pt-8 md:gap-10 md:px-8 md:pt-10">
+    <!-- Hero Section -->
+    <section class="hero-panel">
+      <div class="space-y-3">
+        <h1 class="hero-title">Contact The Overwhelmed Gamer</h1>
+        <p class="hero-copy">
+          Have a homebrew, indie, retro, or backlog-worthy game you want me to check out? Send it my way.
+        </p>
+        <p class="hero-copy text-sm">
+          I'm always open to hearing from developers, publishers, creators, and retro gaming fans. Use the form below for review requests, podcast guest ideas, livestream coverage, sponsorships, collaborations, or general questions.
+        </p>
+      </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="feature-card space-y-6">
+      <div class="space-y-1">
+        <p class="section-kicker">Let's Talk</p>
+        <h2 class="font-display text-2xl text-[var(--color-text)]">Get in Touch</h2>
+      </div>
+
+      <form name="contact" method="POST" data-netlify="true" action="/thanks" class="space-y-5" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="contact" />
+        
+        <!-- Honeypot -->
+        <p class="hidden">
+          <label>
+            Don't fill this out if you're human:
+            <input name="bot-field" />
+          </label>
+        </p>
+
+        <!-- Name Field -->
+        <div class="form-group">
+          <label for="name" class="form-label">
+            Name <span class="text-[var(--color-accent)]">*</span>
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            placeholder="Your name"
+            class="form-input"
+          />
+        </div>
+
+        <!-- Email Field -->
+        <div class="form-group">
+          <label for="email" class="form-label">
+            Email <span class="text-[var(--color-accent)]">*</span>
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            placeholder="your@email.com"
+            class="form-input"
+          />
+        </div>
+
+        <!-- Company/Studio Name -->
+        <div class="form-group">
+          <label for="company" class="form-label">
+            Company / Developer / Studio Name
+          </label>
+          <input
+            type="text"
+            id="company"
+            name="company"
+            placeholder="(Optional)"
+            class="form-input"
+          />
+        </div>
+
+        <!-- Website/Game Link -->
+        <div class="form-group">
+          <label for="website" class="form-label">
+            Website or Game Link
+          </label>
+          <input
+            type="url"
+            id="website"
+            name="website"
+            placeholder="https://example.com (Optional)"
+            class="form-input"
+          />
+        </div>
+
+        <!-- Reason for Reaching Out -->
+        <div class="form-group">
+          <label for="reason" class="form-label">
+            Reason for Reaching Out <span class="text-[var(--color-accent)]">*</span>
+          </label>
+          <select id="reason" name="reason" required class="form-input">
+            <option value="">Select one...</option>
+            <option value="Review request">Review request</option>
+            <option value="Homebrew game submission">Homebrew game submission</option>
+            <option value="Indie game submission">Indie game submission</option>
+            <option value="Podcast guest / interview">Podcast guest / interview</option>
+            <option value="Livestream coverage">Livestream coverage</option>
+            <option value="Sponsorship / partnership">Sponsorship / partnership</option>
+            <option value="General question">General question</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <!-- Platform/System -->
+        <div class="form-group">
+          <label for="platform" class="form-label">
+            Platform / System
+          </label>
+          <input
+            type="text"
+            id="platform"
+            name="platform"
+            placeholder="e.g., NES, SNES, Game Boy, PC, etc. (Optional)"
+            class="form-input"
+          />
+        </div>
+
+        <!-- Release Status -->
+        <div class="form-group">
+          <label for="release-status" class="form-label">
+            Release Status
+          </label>
+          <select id="release-status" name="release_status" class="form-input">
+            <option value="">Select one...</option>
+            <option value="Released">Released</option>
+            <option value="In development">In development</option>
+            <option value="Demo available">Demo available</option>
+            <option value="Kickstarter / crowdfunding">Kickstarter / crowdfunding</option>
+            <option value="Coming soon">Coming soon</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <!-- Message Field -->
+        <div class="form-group">
+          <label for="message" class="form-label">
+            Message <span class="text-[var(--color-accent)]">*</span>
+          </label>
+          <textarea
+            id="message"
+            name="message"
+            required
+            rows="6"
+            placeholder="Tell me about your game, idea, or question..."
+            class="form-input resize-none"
+          ></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="accent-button w-full justify-center">
+          Send Message
+        </button>
+      </form>
+    </section>
+
+    <!-- Review Request Guidance -->
+    <section class="feature-card space-y-4">
+      <div class="space-y-1">
+        <p class="section-kicker">Review Request Tips</p>
+        <h2 class="font-display text-2xl text-[var(--color-text)]">Sending a game for review?</h2>
+      </div>
+      <p class="text-[var(--color-muted)] leading-relaxed">
+        Please include the game title, platform, release status, trailer or gameplay link, and whether a demo, ROM, Steam key, or press kit is available. I cover retro, homebrew, indie, and backlog-friendly games across YouTube, livestreams, podcast episodes, and social posts.
+      </p>
+    </section>
+  </main>
+
+  <SiteFooter brand={siteMeta.title} />
+</BaseLayout>
+
+<style>
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .form-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text);
+    display: block;
+  }
+
+  .form-input {
+    border: 1px solid var(--color-border);
+    border-radius: 0.6rem;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-text);
+    padding: 0.75rem 1rem;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    transition: border-color 200ms ease, background-color 200ms ease;
+  }
+
+  .form-input::placeholder {
+    color: var(--color-muted);
+    opacity: 0.6;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 3px rgba(255, 180, 0, 0.15);
+  }
+
+  .form-input:invalid:not(:placeholder-shown) {
+    border-color: #ff6b6b;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+</style>

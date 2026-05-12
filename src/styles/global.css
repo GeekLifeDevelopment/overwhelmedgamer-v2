@@ -492,6 +492,39 @@ body {
 	color: #ffe4a5;
 }
 
+/* Podcast Listen Button Platform Styles */
+.podcast-listen-spotify {
+	background-color: #1db954;
+}
+
+.podcast-listen-spotify:hover {
+	background-color: #1ed760;
+}
+
+.podcast-listen-apple {
+	background-color: #a2845d;
+}
+
+.podcast-listen-apple:hover {
+	background-color: #b79869;
+}
+
+.podcast-listen-youtube {
+	background-color: #ff0000;
+}
+
+.podcast-listen-youtube:hover {
+	background-color: #cc0000;
+}
+
+.podcast-listen-rss {
+	background-color: #ff6600;
+}
+
+.podcast-listen-rss:hover {
+	background-color: #ff7f1a;
+}
+
 @keyframes rise-in {
 	from {
 		opacity: 0;

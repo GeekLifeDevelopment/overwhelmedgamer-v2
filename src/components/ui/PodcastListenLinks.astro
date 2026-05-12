@@ -1,0 +1,45 @@
+---
+import { PodcastListenButton } from "./PodcastListenButton";
+import type { MediaCardItem } from "../../data/media";
+
+interface Props {
+  episode: MediaCardItem;
+}
+
+const { episode } = Astro.props;
+const platformLinks = episode.links || {};
+
+// Define platform order and metadata
+const platforms = [
+  { key: "spotify" as const, label: "Spotify" },
+  { key: "apple" as const, label: "Apple Podcasts" },
+  { key: "youtube" as const, label: "YouTube" },
+  { key: "rss" as const, label: "RSS Feed" }
+];
+
+// Filter to only platforms with URLs
+const availablePlatforms = platforms.filter((p) => platformLinks[p.key]);
+
+// If no platforms have URLs, don't render anything
+if (availablePlatforms.length === 0) {
+  // Could optionally render an empty state message here
+  // For now, we'll render nothing
+}
+---
+
+{
+  availablePlatforms.length > 0 && (
+    <section class="feature-card space-y-4">
+      <p class="section-kicker">Listen On</p>
+      <div class="flex flex-wrap gap-3">
+        {availablePlatforms.map((platform) => (
+          <PodcastListenButton
+            client:load
+            platform={platform.key}
+            url={platformLinks[platform.key] || ""}
+          />
+        ))}
+      </div>
+    </section>
+  )
+}

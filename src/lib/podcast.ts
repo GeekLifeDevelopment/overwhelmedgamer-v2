@@ -255,7 +255,8 @@ export async function getLatestPodcastEpisodes(maxResults = 3): Promise<MediaCar
           sourceLink: link || feedUrl,
           summary,
           notesText,
-          notesHtml
+          notesHtml,
+          links: PODCAST_PLATFORM_LINKS
         } satisfies MediaCardItem;
       })
       .filter((episode) => Boolean(episode.title));

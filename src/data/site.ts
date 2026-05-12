@@ -59,7 +59,9 @@ export const navItems: NavItem[] = [
   { label: "Videos", href: "#videos" },
   { label: "Podcast", href: "/podcast" },
   { label: "Schedule", href: "#schedule" },
-  { label: "Collector", href: "#collector" }
+  { label: "Collector", href: "#collector" },
+  { label: "Tools", href: "#tools" },
+  { label: "Contact", href: "/contact" }
 ];
 
 export const featuredModules: FeatureItem[] = [

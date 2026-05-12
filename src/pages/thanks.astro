@@ -1,0 +1,46 @@
+---
+import SiteFooter from "../components/site/SiteFooter.astro";
+import SiteHeader from "../components/site/SiteHeader.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { navItems, siteMeta } from "../data/site";
+---
+
+<BaseLayout title="Message Received | The Overwhelmed Gamer" description="Your message has been sent successfully.">
+  <SiteHeader brand={siteMeta.title} navItems={navItems} />
+
+  <main class="mx-auto flex w-full max-w-5xl flex-col gap-8 px-5 pb-16 pt-8 md:gap-10 md:px-8 md:pt-10">
+    <!-- Success Message Section -->
+    <section class="hero-panel">
+      <div class="space-y-4 text-center">
+        <div class="text-4xl md:text-5xl">✓</div>
+        <h1 class="hero-title">Thanks for reaching out!</h1>
+        <p class="hero-copy max-w-2xl mx-auto">
+          I'll review your message and get back to you if it looks like a good fit for The Overwhelmed Gamer.
+        </p>
+      </div>
+    </section>
+
+    <!-- Next Steps -->
+    <section class="feature-card space-y-4">
+      <p class="section-kicker">What Happens Next</p>
+      <div class="space-y-3">
+        <p class="text-[var(--color-muted)] leading-relaxed">
+          I typically review new messages within 3-5 business days. If your project or proposal looks like a match, I'll reach out via email with next steps.
+        </p>
+        <p class="text-[var(--color-muted)] leading-relaxed">
+          In the meantime, feel free to check out my latest content on <a href="/" class="text-[var(--color-accent)] hover:text-[var(--color-accent-strong)] transition-colors">YouTube</a>, 
+          <a href="/podcast" class="text-[var(--color-accent)] hover:text-[var(--color-accent-strong)] transition-colors">the podcast</a>, or 
+          <a href="#schedule" class="text-[var(--color-accent)] hover:text-[var(--color-accent-strong)] transition-colors">my livestreams</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- Return to Home -->
+    <div class="flex justify-center gap-3 flex-wrap">
+      <a href="/" class="accent-button">Back to Home</a>
+      <a href="/podcast" class="ghost-button">Check Out Podcast</a>
+    </div>
+  </main>
+
+  <SiteFooter brand={siteMeta.title} />
+</BaseLayout>

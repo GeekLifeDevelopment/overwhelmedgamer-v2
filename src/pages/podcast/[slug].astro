@@ -1,10 +1,11 @@
 ---
 import SiteFooter from "../../components/site/SiteFooter.astro";
 import SiteHeader from "../../components/site/SiteHeader.astro";
+import PodcastListenLinks from "../../components/ui/PodcastListenLinks.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { latestPodcastEpisodes as fallbackPodcastEpisodes } from "../../data/media";
 import { navItems, siteMeta } from "../../data/site";
-import { getLatestPodcastEpisodes, PODCAST_PLATFORM_LINKS } from "../../lib/podcast";
+import { getLatestPodcastEpisodes } from "../../lib/podcast";
 
 export async function getStaticPaths() {
   const episodes = await getLatestPodcastEpisodes(100);
@@ -29,13 +30,6 @@ const episodeSummary =
 const notesHtml = currentEpisode.notesHtml?.trim() || "<p>More notes for this episode are coming soon.</p>";
 const notesLength = currentEpisode.notesText?.length ?? 0;
 const shouldCollapseNotes = notesLength > 1500;
-
-const platformLinks = {
-  spotify: PODCAST_PLATFORM_LINKS.spotify,
-  apple: PODCAST_PLATFORM_LINKS.apple,
-  youtube: PODCAST_PLATFORM_LINKS.youtube,
-  rss: PODCAST_PLATFORM_LINKS.rss
-};
 ---
 
 <BaseLayout title={`${currentEpisode.title} | ${siteMeta.title}`} description={episodeSummary}>
@@ -88,15 +82,7 @@ const platformLinks = {
       </section>
     ) : null}
 
-    <section class="feature-card space-y-4">
-      <p class="section-kicker">Listen On</p>
-      <div class="flex flex-wrap gap-2">
-        <a href={platformLinks.spotify ?? "#"} class="tool-cta" target="_blank" rel="noopener noreferrer">Spotify</a>
-        <a href={platformLinks.apple ?? "#"} class="tool-cta" target="_blank" rel="noopener noreferrer">Apple Podcasts</a>
-        <a href={platformLinks.youtube ?? "#"} class="tool-cta" target="_blank" rel="noopener noreferrer">YouTube</a>
-        <a href={platformLinks.rss} class="tool-cta" target="_blank" rel="noopener noreferrer">RSS Feed</a>
-      </div>
-    </section>
+    <PodcastListenLinks episode={currentEpisode} />
 
     <section class="feature-card space-y-4">
       <p class="section-kicker">Episode Notes</p>

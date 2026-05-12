@@ -12,6 +12,13 @@ export type MediaCardItem = {
   summary?: string;
   notesText?: string;
   notesHtml?: string;
+  links?: {
+    spotify?: string;
+    apple?: string;
+    youtube?: string;
+    rss?: string;
+    podbean?: string;
+  };
 };
 
 export const latestYouTubeVideos: MediaCardItem[] = [
@@ -82,7 +89,13 @@ export const latestPodcastEpisodes: MediaCardItem[] = [
     thumbnail: "/web-logo.png",
     date: "May 7, 2026",
     platform: "Spotify + Apple",
-    externalLink: "/podcast"
+    externalLink: "/podcast",
+    links: {
+      spotify: "https://open.spotify.com/show/2QjYq0AzmWPuqLz6kTZIht",
+      apple: "https://podcasts.apple.com/us/podcast/overwhelmed-gamer/id1752872724",
+      youtube: "https://www.youtube.com/@overwhelmedgamer",
+      rss: "https://feed.podbean.com/jasonft/feed.xml"
+    }
   },
   {
     title: "Episode 41: Co-op Nights That Actually Work",
@@ -91,7 +104,13 @@ export const latestPodcastEpisodes: MediaCardItem[] = [
     thumbnail: "/web-logo.png",
     date: "Apr 30, 2026",
     platform: "Spotify + Apple",
-    externalLink: "/podcast"
+    externalLink: "/podcast",
+    links: {
+      spotify: "https://open.spotify.com/show/2QjYq0AzmWPuqLz6kTZIht",
+      apple: "https://podcasts.apple.com/us/podcast/overwhelmed-gamer/id1752872724",
+      youtube: "https://www.youtube.com/@overwhelmedgamer",
+      rss: "https://feed.podbean.com/jasonft/feed.xml"
+    }
   },
   {
     title: "Episode 40: Gear FOMO vs Real Progress",
@@ -100,6 +119,12 @@ export const latestPodcastEpisodes: MediaCardItem[] = [
     thumbnail: "/web-logo.png",
     date: "Apr 23, 2026",
     platform: "Spotify + Apple",
-    externalLink: "/podcast"
+    externalLink: "/podcast",
+    links: {
+      spotify: "https://open.spotify.com/show/2QjYq0AzmWPuqLz6kTZIht",
+      apple: "https://podcasts.apple.com/us/podcast/overwhelmed-gamer/id1752872724",
+      youtube: "https://www.youtube.com/@overwhelmedgamer",
+      rss: "https://feed.podbean.com/jasonft/feed.xml"
+    }
   }
 ];
