@@ -30,9 +30,49 @@ const episodeSummary =
 const notesHtml = currentEpisode.notesHtml?.trim() || "<p>More notes for this episode are coming soon.</p>";
 const notesLength = currentEpisode.notesText?.length ?? 0;
 const shouldCollapseNotes = notesLength > 1500;
+
+const siteUrl =
+  (import.meta.env.PUBLIC_SITE_URL as string | undefined)?.replace(/\/$/, "") ||
+  "https://www.theoverwhelmedgamer.com";
+
+const toAbsoluteUrl = (value?: string): string => {
+  if (!value) return `${siteUrl}/podcast`;
+  return value.startsWith("http") ? value : `${siteUrl}${value.startsWith("/") ? value : `/${value}`}`;
+};
+
+const episodeUrl = toAbsoluteUrl(currentEpisode.externalLink);
+const episodeImage = toAbsoluteUrl(currentEpisode.thumbnail);
+const episodeSchema = {
+  "@context": "https://schema.org",
+  "@type": "PodcastEpisode",
+  name: currentEpisode.title,
+  url: episodeUrl,
+  datePublished: currentEpisode.date,
+  description: episodeSummary,
+  timeRequired: "PT45M",
+  partOfSeries: {
+    "@type": "PodcastSeries",
+    name: "The Overwhelmed Gamer Podcast",
+    url: `${siteUrl}/podcast`
+  },
+  associatedMedia: {
+    "@type": "MediaObject",
+    contentUrl: currentEpisode.audioUrl ?? toAbsoluteUrl(currentEpisode.sourceLink ?? currentEpisode.externalLink)
+  },
+  image: episodeImage
+};
 ---
 
-<BaseLayout title={`${currentEpisode.title} | ${siteMeta.title}`} description={episodeSummary}>
+<BaseLayout
+  title={`${currentEpisode.title} | ${siteMeta.title}`}
+  description={episodeSummary}
+  canonicalUrl={episodeUrl}
+  ogType="article"
+  ogTitle={`${currentEpisode.title} | ${siteMeta.title}`}
+  ogDescription={episodeSummary}
+  ogImage={episodeImage}
+  jsonLd={episodeSchema}
+>
   <SiteHeader brand={siteMeta.title} navItems={navItems} />
 
   <main class="mx-auto flex w-full max-w-5xl flex-col gap-7 px-5 pb-16 pt-8 md:gap-9 md:px-8 md:pt-10">
@@ -59,7 +99,7 @@ const shouldCollapseNotes = notesLength > 1500;
         <div class="episode-art-card">
           <img
             src={currentEpisode.thumbnail}
-            alt=""
+            alt={`Podcast cover art for ${currentEpisode.title}`}
             class="episode-art"
             loading="eager"
             decoding="async"
@@ -109,7 +149,13 @@ const shouldCollapseNotes = notesLength > 1500;
           relatedEpisodes.map((related) => (
             <a href={related.externalLink} class="media-card flex h-full flex-col gap-3" aria-label={`Open ${related.title}`}>
               <div class="media-thumbnail-wrap mb-0">
-                <img src={related.thumbnail} alt="" class="media-thumbnail" loading="lazy" decoding="async" />
+                <img
+                  src={related.thumbnail}
+                  alt={`Podcast episode thumbnail for ${related.title}`}
+                  class="media-thumbnail"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
 
               <h3 class="font-display text-xl text-[var(--color-text)]">{related.title}</h3>

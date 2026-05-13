@@ -34,6 +34,10 @@ export type MerchProduct = {
   description: string;
   /** Starting price formatted as a currency string, e.g. "From $26.00" */
   price: string;
+  minPrice?: number;
+  maxPrice?: number;
+  currency?: string;
+  sku?: string;
   imageUrl: string;
   productUrl: string;
   available: boolean;
@@ -99,12 +103,42 @@ function formatPrice(variants: FWVariant[]): string {
   return prices.length > 1 ? `From ${formatted}` : formatted;
 }
 
+function getPriceStats(variants: FWVariant[]): {
+  minPrice?: number;
+  maxPrice?: number;
+  currency?: string;
+  sku?: string;
+} {
+  if (!variants || variants.length === 0) return {};
+
+  const prices = variants
+    .map((v) => v.unitPrice?.value)
+    .filter((p): p is number => typeof p === "number");
+  const sku = variants.find((v) => typeof v.sku === "string" && v.sku.trim().length > 0)?.sku;
+  const currency = variants.find((v) => typeof v.unitPrice?.currency === "string")?.unitPrice.currency;
+
+  if (prices.length === 0) {
+    return {
+      currency,
+      sku
+    };
+  }
+
+  return {
+    minPrice: Math.min(...prices),
+    maxPrice: Math.max(...prices),
+    currency,
+    sku
+  };
+}
+
 function mapProduct(fw: FWProduct): MerchProduct {
   const imageUrl =
     fw.images?.[0]?.transformedUrl ?? fw.images?.[0]?.url ?? "";
   const productUrl = `${SHOP_URL}products/${fw.slug}`;
   const available =
     fw.state?.type === "AVAILABLE" && fw.access?.type === "PUBLIC";
+  const { minPrice, maxPrice, currency, sku } = getPriceStats(fw.variants ?? []);
 
   return {
     id: fw.id,
@@ -112,6 +146,10 @@ function mapProduct(fw: FWProduct): MerchProduct {
     slug: fw.slug,
     description: fw.description ?? "",
     price: formatPrice(fw.variants ?? []),
+    minPrice,
+    maxPrice,
+    currency,
+    sku,
     imageUrl,
     productUrl,
     available,

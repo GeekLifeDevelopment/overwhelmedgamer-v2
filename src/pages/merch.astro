@@ -6,11 +6,81 @@ import { navItems, siteMeta } from "../data/site";
 import { getMerchProducts, SHOP_URL } from "../lib/fourthwall";
 
 const products = await getMerchProducts();
+
+const siteUrl =
+  (import.meta.env.PUBLIC_SITE_URL as string | undefined)?.replace(/\/$/, "") ||
+  "https://www.theoverwhelmedgamer.com";
+const merchUrl = `${siteUrl}/merch`;
+const merchMetaTitle = "Official Overwhelmed Gamer Merch & Retro Gaming Apparel";
+const merchMetaDescription =
+  "Rep the backlog and support the channel with official Overwhelmed Gamer merch: retro gaming shirts, funny gamer tees, and new apparel drops.";
+const featuredOgImage = products[0]?.imageUrl || `${siteUrl}/web-logo.png`;
+
+const productAltText = (title: string): string => {
+  const lower = title.toLowerCase();
+  if (lower.includes("snake")) {
+    return "Black retro gaming t-shirt featuring Snake?! Snake?! SNAKE!!! red alert style design";
+  }
+  if (lower.includes("hey! listen")) {
+    return "Retro gamer graphic tee with Hey! Listen! quote inspired by classic fantasy adventure games";
+  }
+  if (lower.includes("nes") || lower.includes("classic nes")) {
+    return "Minimalist retro gaming shirt with classic NES inspired quote design";
+  }
+  if (lower.includes("save states")) {
+    return "Funny retro gamer humor shirt with Save States Older Than You slogan";
+  }
+  return `${title}, official Overwhelmed Gamer retro gaming apparel`;
+};
+
+const productSchema = products.slice(0, 8).map((item) => {
+  const hasPriceRange =
+    typeof item.minPrice === "number" &&
+    typeof item.maxPrice === "number" &&
+    item.maxPrice > item.minPrice;
+  const currency = item.currency || "USD";
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: item.title,
+    image: [item.imageUrl],
+    description: item.description || `${item.title} from the official Overwhelmed Gamer merch collection.`,
+    sku: item.sku || `SKU-${item.slug.toUpperCase()}`,
+    brand: {
+      "@type": "Brand",
+      name: "The Overwhelmed Gamer"
+    },
+    offers: hasPriceRange
+      ? {
+          "@type": "AggregateOffer",
+          priceCurrency: currency,
+          lowPrice: item.minPrice?.toFixed(2),
+          highPrice: item.maxPrice?.toFixed(2),
+          offerCount: 2,
+          availability: item.available ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          url: item.productUrl
+        }
+      : {
+          "@type": "Offer",
+          priceCurrency: currency,
+          price: (item.minPrice ?? 0).toFixed(2),
+          availability: item.available ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          url: item.productUrl
+        }
+  };
+});
 ---
 
 <BaseLayout
-  title="Overwhelmed Gamer Merch"
-  description="Shop official Overwhelmed Gamer merch and support retro gaming videos, podcasts, livestreams, and backlog-focused content."
+  title={merchMetaTitle}
+  description={merchMetaDescription}
+  canonicalUrl={merchUrl}
+  ogType="website"
+  ogTitle={merchMetaTitle}
+  ogDescription="Official Overwhelmed Gamer merch and retro gaming apparel. Rep the backlog and support the channel."
+  ogImage={featuredOgImage}
+  jsonLd={productSchema}
 >
   <SiteHeader brand={siteMeta.title} navItems={navItems} />
 
@@ -40,8 +110,14 @@ const products = await getMerchProducts();
           </div>
         </div>
 
-        <div class="hero-art-wrap" aria-hidden="true">
-          <img src="/web-logo.png" alt="" class="hero-art-main" loading="eager" decoding="async" />
+        <div class="hero-art-wrap">
+          <img
+            src="/web-logo.png"
+            alt="Overwhelmed Gamer controller logo for the official retro gaming merch store"
+            class="hero-art-main"
+            loading="eager"
+            decoding="async"
+          />
         </div>
       </div>
     </section>
@@ -78,7 +154,7 @@ const products = await getMerchProducts();
               <div class="merch-image-wrap">
                 <img
                   src={item.imageUrl}
-                  alt={item.title}
+                  alt={productAltText(item.title)}
                   class="merch-image"
                   loading="lazy"
                   decoding="async"

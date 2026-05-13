@@ -4,11 +4,52 @@ import SiteHeader from "../components/site/SiteHeader.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { navItems, siteMeta } from "../data/site";
 
-const pageTitle = "Contact The Overwhelmed Gamer";
-const pageDescription = "Contact The Overwhelmed Gamer for homebrew game reviews, indie game coverage, podcast interviews, livestream requests, sponsorships, and collaborations.";
+const siteUrl =
+  (import.meta.env.PUBLIC_SITE_URL as string | undefined)?.replace(/\/$/, "") ||
+  "https://www.theoverwhelmedgamer.com";
+const contactPageUrl = `${siteUrl}/contact`;
+const pageTitle = "Contact The Overwhelmed Gamer | Submit Games for Review";
+const pageDescription =
+  "Developers, publishers, and fans can submit homebrew, indie, and retro games for review coverage, podcast guest ideas, and collaboration requests.";
+
+const contactPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: "Contact The Overwhelmed Gamer",
+  url: contactPageUrl,
+  description:
+    "Contact portal for review requests, homebrew and indie submissions, podcast guest ideas, and creator collaborations.",
+  mainEntity: {
+    "@type": "ContactPoint",
+    contactType: "public relations",
+    availableLanguage: ["English"],
+    url: contactPageUrl
+  }
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "The Overwhelmed Gamer",
+  url: siteUrl,
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "public relations",
+    url: contactPageUrl
+  }
+};
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription}>
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonicalUrl={contactPageUrl}
+  ogType="website"
+  ogTitle={pageTitle}
+  ogDescription={pageDescription}
+  ogImage="/web-logo.png"
+  jsonLd={[contactPageSchema, organizationSchema]}
+>
   <SiteHeader brand={siteMeta.title} navItems={navItems} />
 
   <main class="mx-auto flex w-full max-w-5xl flex-col gap-8 px-5 pb-16 pt-8 md:gap-10 md:px-8 md:pt-10">
@@ -26,10 +67,10 @@ const pageDescription = "Contact The Overwhelmed Gamer for homebrew game reviews
     </section>
 
     <!-- Contact Form -->
-    <section class="feature-card space-y-6">
+    <section class="feature-card space-y-6" aria-labelledby="contact-form-heading">
       <div class="space-y-1">
         <p class="section-kicker">Let's Talk</p>
-        <h2 class="font-display text-2xl text-[var(--color-text)]">Get in Touch</h2>
+        <h2 id="contact-form-heading" class="font-display text-2xl text-[var(--color-text)]">Get in Touch</h2>
       </div>
 
       <form name="contact" method="POST" data-netlify="true" action="/thanks" class="space-y-5" netlify-honeypot="bot-field">
@@ -172,10 +213,10 @@ const pageDescription = "Contact The Overwhelmed Gamer for homebrew game reviews
     </section>
 
     <!-- Review Request Guidance -->
-    <section class="feature-card space-y-4">
+    <section class="feature-card space-y-4" aria-labelledby="review-request-heading">
       <div class="space-y-1">
         <p class="section-kicker">Review Request Tips</p>
-        <h2 class="font-display text-2xl text-[var(--color-text)]">Sending a game for review?</h2>
+        <h2 id="review-request-heading" class="font-display text-2xl text-[var(--color-text)]">Sending a game for review?</h2>
       </div>
       <p class="text-[var(--color-muted)] leading-relaxed">
         Please include the game title, platform, release status, trailer or gameplay link, and whether a demo, ROM, Steam key, or press kit is available. I cover retro, homebrew, indie, and backlog-friendly games across YouTube, livestreams, podcast episodes, and social posts.
