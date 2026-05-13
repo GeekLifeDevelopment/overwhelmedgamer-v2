@@ -9,6 +9,7 @@ interface Props {
 
 const { item, label, ariaPrefix } = Astro.props;
 const isExternalLink = /^https?:\/\//.test(item.externalLink);
+const thumbnailAlt = `${label} thumbnail for ${item.title}`;
 
 const TRUNCATE_LENGTH = 120;
 const desc = item.description ?? "";
@@ -23,7 +24,7 @@ const shortDesc = isLong ? desc.slice(0, TRUNCATE_LENGTH).trimEnd() + "…" : de
   rel={isExternalLink ? "noopener noreferrer" : undefined}
 >
   <div class="media-thumbnail-wrap">
-    <img src={item.thumbnail} alt="" class="media-thumbnail" loading="lazy" decoding="async" />
+    <img src={item.thumbnail} alt={thumbnailAlt} class="media-thumbnail" loading="lazy" decoding="async" />
     <span class="media-label">{label}</span>
   </div>
 

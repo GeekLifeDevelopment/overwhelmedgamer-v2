@@ -80,7 +80,7 @@ const featuredDescription = truncateAtWord(
           >
             <img
               src={featuredEpisode.thumbnail}
-              alt=""
+              alt={`Podcast episode thumbnail for ${featuredEpisode.title}`}
               class="media-thumbnail"
               loading="lazy"
               decoding="async"
@@ -131,7 +131,7 @@ const featuredDescription = truncateAtWord(
                 <span class="media-label">Podcast</span>
               </a>
 
-              <h4 class="font-display text-xl text-[var(--color-text)]">{episode.title}</h4>
+              <h3 class="font-display text-xl text-[var(--color-text)]">{episode.title}</h3>
               <p class="text-xs uppercase tracking-[0.13em] text-[var(--color-muted)]">
                 {episode.date} • {episode.platform}
               </p>

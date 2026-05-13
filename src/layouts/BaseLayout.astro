@@ -4,12 +4,37 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description?: string;
+  canonicalUrl?: string;
+  ogType?: "website" | "article";
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  twitterCard?: "summary" | "summary_large_image";
+  jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
 const {
   title,
-  description = "The Overwhelmed Gamer helps players make faster, smarter gaming choices."
+  description = "The Overwhelmed Gamer helps players make faster, smarter gaming choices.",
+  canonicalUrl,
+  ogType = "website",
+  ogTitle = title,
+  ogDescription = description,
+  ogImage,
+  twitterCard = "summary_large_image",
+  jsonLd
 } = Astro.props;
+
+const siteUrl =
+  (import.meta.env.PUBLIC_SITE_URL as string | undefined)?.replace(/\/$/, "") ||
+  "https://www.theoverwhelmedgamer.com";
+const resolvedCanonicalUrl = canonicalUrl || `${siteUrl}${Astro.url.pathname}`;
+const resolvedOgImage = ogImage
+  ? ogImage.startsWith("http")
+    ? ogImage
+    : `${siteUrl}${ogImage.startsWith("/") ? ogImage : `/${ogImage}`}`
+  : undefined;
+const jsonLdItems = !jsonLd ? [] : Array.isArray(jsonLd) ? jsonLd : [jsonLd];
 ---
 
 <!doctype html>
@@ -18,9 +43,30 @@ const {
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width" />
+    <link rel="canonical" href={resolvedCanonicalUrl} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="The Overwhelmed Gamer" />
+    <meta property="og:url" content={resolvedCanonicalUrl} />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
+    {resolvedOgImage && (
+      <>
+        <meta property="og:image" content={resolvedOgImage} />
+        <meta property="og:image:alt" content={ogTitle} />
+        <meta name="twitter:image" content={resolvedOgImage} />
+      </>
+    )}
+    <meta name="twitter:card" content={twitterCard} />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={ogDescription} />
     <title>{title}</title>
+    {
+      jsonLdItems.map((item) => (
+        <script type="application/ld+json" set:html={JSON.stringify(item)} />
+      ))
+    }
   </head>
   <body class="app-shell">
     <slot />

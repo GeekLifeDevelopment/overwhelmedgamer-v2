@@ -12,6 +12,8 @@ const tools = [
       "Track your video game collection, backlog, wishlist, and selling notes in one place. Built for collectors who want a cleaner way to manage what they own and what they still want to play.",
     href: "https://ogcollector.space",
     cta: "Open OG Collector",
+    icon: "/web-logo-100.png",
+    iconAlt: "OG Collector tool icon for retro game collection tracking",
     external: true,
   },
   {
@@ -21,6 +23,8 @@ const tools = [
       "Quickly check the current value of a game without needing to create an account. Useful for pickups, trades, collection decisions, and figuring out whether a deal is worth grabbing.",
     href: "https://ogcollector.space/price-check",
     cta: "Check Game Prices",
+    icon: "/web-logo-100.png",
+    iconAlt: "Game Price Checker tool icon for retro game value lookup",
     external: true,
   },
 ];
@@ -30,23 +34,75 @@ const comingSoon = [
     title: "Random Game Picker",
     description:
       "Find something to play based on system, genre, mood, or collection size.",
+    icon: "/web-logo-100.png",
+    iconAlt: "Random Game Picker icon for choosing a retro game",
   },
   {
     title: "Stream Idea Generator",
     description:
       "Get quick ideas for retro streams, challenge runs, and themed gaming nights.",
+    icon: "/web-logo-100.png",
+    iconAlt: "Stream Idea Generator icon for retro gaming content prompts",
   },
   {
     title: "Backlog Roulette",
     description:
       "Let fate pick the next game from your never-ending backlog.",
+    icon: "/web-logo-100.png",
+    iconAlt: "Backlog Roulette icon for deciding what game to play next",
   },
 ];
+
+const siteUrl =
+  (import.meta.env.PUBLIC_SITE_URL as string | undefined)?.replace(/\/$/, "") ||
+  "https://www.theoverwhelmedgamer.com";
+const toolsUrl = `${siteUrl}/tools`;
+const toolsMetaTitle = "Retro Gaming Tools & Collection Trackers | TOG";
+const toolsMetaDescription =
+  "Useful tools for collectors: manage your gaming backlog, track retro collections, and check game values instantly with The Overwhelmed Gamer.";
+
+const webAppOgCollectorSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "OG Collector",
+  applicationCategory: "Game",
+  operatingSystem: "Web",
+  url: "https://ogcollector.space",
+  description:
+    "Retro game collection tracker and backlog manager for organizing owned games, wishlist targets, and next-play priorities.",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD"
+  }
+};
+
+const webAppPriceCheckerSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Game Price Checker",
+  applicationCategory: "Game",
+  operatingSystem: "Web",
+  url: "https://ogcollector.space/price-check",
+  description:
+    "Video game price checker for quick value lookups, trade decisions, and collector buying checks.",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD"
+  }
+};
 ---
 
 <BaseLayout
-  title="Retro Gaming Tools | The Overwhelmed Gamer"
-  description="Explore tools from The Overwhelmed Gamer for retro game collectors, backlog players, streamers, and homebrew fans, including OG Collector and the public game price checker."
+  title={toolsMetaTitle}
+  description={toolsMetaDescription}
+  canonicalUrl={toolsUrl}
+  ogType="website"
+  ogTitle={toolsMetaTitle}
+  ogDescription="Useful tools for collectors, including OG Collector and a fast game price checker for retro gamers."
+  ogImage="/web-logo.png"
+  jsonLd={[webAppOgCollectorSchema, webAppPriceCheckerSchema]}
 >
   <SiteHeader brand={siteMeta.title} navItems={navItems} />
 
@@ -66,8 +122,14 @@ const comingSoon = [
             <a href="/contact" class="ghost-button">Suggest a Tool</a>
           </div>
         </div>
-        <div class="hero-art-wrap" aria-hidden="true">
-          <img src="/web-logo.png" alt="" class="hero-art-main" loading="eager" decoding="async" />
+        <div class="hero-art-wrap">
+          <img
+            src="/web-logo.png"
+            alt="Overwhelmed Gamer controller illustration for retro gaming tools"
+            class="hero-art-main"
+            loading="eager"
+            decoding="async"
+          />
         </div>
       </div>
     </section>
@@ -84,6 +146,15 @@ const comingSoon = [
           <article class="tool-card">
             <div class="tool-card-body">
               <span class="tool-badge">{tool.badge}</span>
+              <img
+                src={tool.icon}
+                alt={tool.iconAlt}
+                class="tool-icon"
+                loading="lazy"
+                decoding="async"
+                width="48"
+                height="48"
+              />
               <h3 class="mt-3 font-display text-xl text-[var(--color-text)]">{tool.title}</h3>
               <p class="mt-2 text-sm leading-relaxed text-[var(--color-muted)]">{tool.description}</p>
             </div>
@@ -124,6 +195,15 @@ const comingSoon = [
         {comingSoon.map((item) => (
           <div class="coming-soon-card" aria-label={`${item.title} — coming soon`}>
             <div class="coming-soon-badge">Coming Soon</div>
+            <img
+              src={item.icon}
+              alt={item.iconAlt}
+              class="tool-icon opacity-60"
+              loading="lazy"
+              decoding="async"
+              width="48"
+              height="48"
+            />
             <h3 class="mt-3 font-display text-base text-[var(--color-text)] opacity-60">{item.title}</h3>
             <p class="mt-2 text-sm leading-relaxed text-[var(--color-muted)] opacity-60">{item.description}</p>
           </div>
@@ -160,6 +240,17 @@ const comingSoon = [
 
   .tool-card-footer {
     padding: 0 1.5rem 1.5rem;
+  }
+
+  .tool-icon {
+    margin-top: 0.9rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--color-accent) 32%, var(--color-border));
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.3rem;
+    object-fit: cover;
   }
 
   .tool-badge {

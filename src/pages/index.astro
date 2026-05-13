@@ -45,9 +45,75 @@ const latestEpisodes = (fetchedEpisodes.length > 0 ? fetchedEpisodes : latestPod
 );
 
 const featuredMerch = await getMerchProducts(SECTION_CARD_LIMIT);
+
+const siteUrl =
+	(import.meta.env.PUBLIC_SITE_URL as string | undefined)?.replace(/\/$/, "") ||
+	"https://www.theoverwhelmedgamer.com";
+
+const homeTitle = "The Overwhelmed Gamer | Retro Reviews & Backlog";
+const homeDescription =
+	"Retro game reviews, homebrew gems, and backlog-saving picks. Watch videos, catch live streams, and hear The Overwhelmed Gamer podcast.";
+const homeCanonical = `${siteUrl}/`;
+const homeOgImage = `${siteUrl}/web-logo.png`;
+
+const parseIsoDate = (value: string): string => {
+	const parsed = new Date(value);
+	if (Number.isNaN(parsed.getTime())) {
+		return new Date().toISOString();
+	}
+	return parsed.toISOString();
+};
+
+const websiteSchema = {
+	"@context": "https://schema.org",
+	"@type": "WebSite",
+	name: "The Overwhelmed Gamer",
+	url: homeCanonical,
+	description:
+		"Retro gaming reviews, homebrew discoveries, and backlog management content.",
+	potentialAction: {
+		"@type": "SearchAction",
+		target: `${siteUrl}/tools?query={search_term_string}`,
+		"query-input": "required name=search_term_string"
+	}
+};
+
+const reviewVideosSchema = {
+	"@context": "https://schema.org",
+	"@type": "ItemList",
+	name: "Newest Review Videos",
+	itemListOrder: "https://schema.org/ItemListOrderDescending",
+	numberOfItems: latestVideos.length,
+	itemListElement: latestVideos.map((video, index) => ({
+		"@type": "VideoObject",
+		position: index + 1,
+		name: video.title,
+		description: video.description,
+		thumbnailUrl: `${siteUrl}${video.thumbnail}`,
+		uploadDate: parseIsoDate(video.date),
+		contentUrl: video.externalLink,
+		embedUrl: video.externalLink,
+		publisher: {
+			"@type": "Organization",
+			name: "The Overwhelmed Gamer",
+			logo: {
+				"@type": "ImageObject",
+				url: `${siteUrl}/web-logo-100.png`
+			}
+		}
+	}))
+};
 ---
 
-<BaseLayout title={siteMeta.title} description={siteMeta.description}>
+<BaseLayout
+	title={homeTitle}
+	description={homeDescription}
+	canonicalUrl={homeCanonical}
+	ogTitle={homeTitle}
+	ogDescription={homeDescription}
+	ogImage={homeOgImage}
+	jsonLd={[websiteSchema, reviewVideosSchema]}
+>
 	<SiteHeader brand={siteMeta.title} navItems={navItems} />
 
 	<main class="mx-auto flex w-full max-w-6xl flex-col gap-16 px-5 pb-20 pt-8 md:px-8 md:pt-10">
