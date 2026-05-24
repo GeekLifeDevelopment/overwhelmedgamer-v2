@@ -58,92 +58,113 @@ function truncateAtWord(input: string, limit: number): string {
 
 const featuredDescription = truncateAtWord(
   normalizeDescription(featuredEpisode?.excerpt ?? featuredEpisode?.description ?? feature.description),
-  220
+  200
 );
 ---
 
-<section id="podcast" class="space-y-8">
+<section id="podcast" class="space-y-6">
   <SectionHeading
     kicker="Podcast"
-    title="Latest from The Overwhelmed Gamer Podcast"
-    subtitle="Retro reviews, homebrew discoveries, backlog talk, and gaming stories from the show."
+    title="Latest Podcast Episodes"
+    subtitle="Retro gaming conversations, reviews, and deep dives."
   />
 
-  <div class="grid gap-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-stretch">
-    <article class="feature-card flex h-full flex-col gap-5 overflow-hidden p-4 sm:p-5">
-      {featuredEpisode ? (
-        <>
+  <div class="grid gap-4 lg:grid-cols-[1.4fr_1fr] lg:items-stretch">
+
+    <!-- Featured episode: compact horizontal layout -->
+    <article class="feature-card h-full overflow-hidden">
+      <div class="flex h-full flex-col gap-4 sm:flex-row sm:gap-4">
+
+        <!-- Thumbnail -->
+        {featuredEpisode ? (
           <a
             href={featuredEpisode.externalLink}
-            class="media-thumbnail-wrap mb-0 block"
             aria-label={`Open ${featuredEpisode.title}`}
+            class="block shrink-0 sm:w-52 sm:self-stretch lg:w-56"
           >
-            <img
-              src={featuredEpisode.thumbnail}
-              alt={`Podcast episode thumbnail for ${featuredEpisode.title}`}
-              class="media-thumbnail"
-              loading="lazy"
-              decoding="async"
-            />
-            <span class="media-label">Latest Episode</span>
+            <div class="podcast-featured-thumbnail-shell">
+              <div class="media-thumbnail-wrap podcast-featured-thumbnail-wrap mb-0">
+                <img
+                  src={featuredEpisode.thumbnail}
+                  alt={`Podcast episode thumbnail for ${featuredEpisode.title}`}
+                  class="media-thumbnail podcast-featured-thumbnail"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <span class="podcast-featured-label">Latest Episode</span>
+            </div>
           </a>
+        ) : null}
 
-          <div class="space-y-3">
-            <h3 class="font-display text-2xl text-[var(--color-text)] sm:text-3xl">
-              {featuredEpisode.title}
-            </h3>
-            <p class="text-xs uppercase tracking-[0.13em] text-[var(--color-muted)]">
-              {featuredEpisode.date} • {featuredEpisode.platform}
-            </p>
-            <p class="text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">
-              {featuredDescription}
-            </p>
-          </div>
-
-          <div class="mt-auto flex flex-wrap gap-3 pt-1">
-            <a href={featuredEpisode.externalLink} class="accent-button">Listen / Open Episode</a>
-            <a href="/podcast" class="ghost-button">View All Episodes</a>
-          </div>
-        </>
-      ) : (
-        <>
-          <h3 class="font-display text-2xl text-[var(--color-text)] sm:text-3xl">{feature.title}</h3>
-          <p class="text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">{feature.description}</p>
-          <div class="mt-auto">
-            <a href="/podcast" class="accent-button">View All Episodes</a>
-          </div>
-        </>
-      )}
+        <!-- Content -->
+        <div class="flex min-w-0 flex-1 flex-col gap-2">
+          {featuredEpisode ? (
+            <>
+              <h3 class="line-clamp-2 font-display text-xl leading-snug text-[var(--color-text)] sm:text-2xl">
+                {featuredEpisode.title}
+              </h3>
+              <p class="text-xs uppercase tracking-[0.13em] text-[var(--color-muted)]">
+                {featuredEpisode.date} • {featuredEpisode.platform}
+              </p>
+              <p class="line-clamp-3 text-sm leading-relaxed text-[var(--color-muted)]">
+                {featuredDescription}
+              </p>
+              <div class="flex flex-wrap gap-2 pt-1">
+                <a href={featuredEpisode.externalLink} class="accent-button">Listen Now</a>
+                <a href="/podcast" class="ghost-button">View All Episodes</a>
+              </div>
+            </>
+          ) : (
+            <>
+              <h3 class="font-display text-xl text-[var(--color-text)] sm:text-2xl">{feature.title}</h3>
+              <p class="text-sm leading-relaxed text-[var(--color-muted)]">{feature.description}</p>
+              <div class="pt-1">
+                <a href="/podcast" class="accent-button">View All Episodes</a>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </article>
 
-    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-      {
-        previousEpisodes.map((episode) => {
-          const cardDescription = truncateAtWord(
-            normalizeDescription(episode.excerpt ?? episode.description),
-            120
-          );
+    <!-- Recent episodes: compact horizontal cards -->
+    <div class="flex flex-col gap-3">
+      {previousEpisodes.map((episode) => (
+        <article class="feature-card overflow-hidden">
+          <div class="flex items-start gap-3">
 
-          return (
-            <article class="media-card flex h-full min-h-[17.5rem] flex-col gap-3">
-              <a href={episode.externalLink} class="media-thumbnail-wrap mb-0 block" aria-label={`Open ${episode.title}`}>
-                <img src={episode.thumbnail} alt="" class="media-thumbnail" loading="lazy" decoding="async" />
-                <span class="media-label">Podcast</span>
-              </a>
+            <!-- Small thumbnail -->
+            <a
+              href={episode.externalLink}
+              aria-label={`Open ${episode.title}`}
+              class="block w-24 shrink-0"
+            >
+              <div class="media-thumbnail-wrap mb-0">
+                <img
+                  src={episode.thumbnail}
+                  alt=""
+                  class="media-thumbnail"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            </a>
 
-              <h3 class="font-display text-xl text-[var(--color-text)]">{episode.title}</h3>
-              <p class="text-xs uppercase tracking-[0.13em] text-[var(--color-muted)]">
+            <!-- Content -->
+            <div class="flex min-w-0 flex-col gap-1">
+              <h3 class="line-clamp-2 font-display text-base leading-snug text-[var(--color-text)]">
+                {episode.title}
+              </h3>
+              <p class="text-xs uppercase tracking-[0.12em] text-[var(--color-muted)]">
                 {episode.date} • {episode.platform}
               </p>
-              <p class="text-sm leading-relaxed text-[var(--color-muted)]">{cardDescription}</p>
-
-              <div class="mt-auto pt-1">
-                <a href={episode.externalLink} class="tool-cta">Open Episode</a>
-              </div>
-            </article>
-          );
-        })
-      }
+              <a href={episode.externalLink} class="tool-cta self-start" style="margin-top: 0.35rem">Listen</a>
+            </div>
+          </div>
+        </article>
+      ))}
     </div>
+
   </div>
 </section>
