@@ -1,4 +1,5 @@
 ---
+import CommunitySupportSection from "../components/site/CommunitySupportSection.astro";
 import GamingToolsSection from "../components/site/GamingToolsSection.astro";
 import HeroSection from "../components/site/HeroSection.astro";
 import LivestreamSection from "../components/site/LivestreamSection.astro";
@@ -117,7 +118,10 @@ const reviewVideosSchema = {
 	<SiteHeader brand={siteMeta.title} navItems={navItems} />
 
 	<main class="mx-auto flex w-full max-w-6xl flex-col gap-16 px-5 pb-20 pt-8 md:px-8 md:pt-10">
-		<HeroSection />
+		<div class="space-y-8">
+			<HeroSection />
+			<CommunitySupportSection />
+		</div>
 
 		<PodcastSection feature={podcastFeature} episodes={latestEpisodes} />
 		<VideoSection videos={latestVideos} />

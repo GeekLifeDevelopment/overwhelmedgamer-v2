@@ -1,0 +1,97 @@
+---
+const benefits = [
+  "Private Discord access",
+  "Member polls",
+  "Suggest future games",
+  "Podcast questions and shout-outs",
+  "Opportunity to join future podcast episodes as a guest"
+];
+---
+
+<section class="community-support-panel" aria-labelledby="community-support-title">
+  <div class="community-support-grid">
+    <div class="space-y-3">
+      <p class="section-kicker">COMMUNITY SUPPORTER</p>
+      <h2 id="community-support-title" class="font-display text-2xl text-[var(--color-text)] sm:text-3xl">
+        Join the Overwhelmed Gamer Community
+      </h2>
+      <p class="max-w-2xl text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">
+        Help support retro reviews, podcasts, livestreams, and homebrew discoveries while joining a private
+        community of fellow gamers.
+      </p>
+
+      <div class="community-support-actions">
+        <a href="/support" class="accent-button">Become a Supporter</a>
+        <a href="#" class="ghost-button" aria-label="Join the Discord community (coming soon)">Join the Discord</a>
+      </div>
+    </div>
+
+    <ul class="community-support-benefits" aria-label="Community Supporter benefits">
+      {
+        benefits.map((benefit) => (
+          <li>{benefit}</li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .community-support-panel {
+    border: 1px solid color-mix(in srgb, var(--color-accent) 30%, var(--color-border));
+    border-radius: 1rem;
+    padding: clamp(1rem, 2.4vw, 1.45rem);
+    background:
+      radial-gradient(circle at 8% 12%, rgba(255, 180, 0, 0.2), transparent 36%),
+      linear-gradient(150deg, rgba(255, 255, 255, 0.015), rgba(255, 122, 0, 0.07));
+    box-shadow: var(--glow);
+  }
+
+  .community-support-grid {
+    display: grid;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .community-support-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding-top: 0.2rem;
+  }
+
+  .community-support-benefits {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .community-support-benefits li {
+    border: 1px solid color-mix(in srgb, var(--color-accent) 34%, var(--color-border));
+    border-radius: 0.7rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.52rem 0.72rem;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: var(--color-text);
+  }
+
+  @media (min-width: 640px) {
+    .community-support-benefits {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .community-support-benefits li {
+      font-size: 0.8rem;
+    }
+  }
+
+  @media (min-width: 960px) {
+    .community-support-grid {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 1.3rem;
+    }
+  }
+</style>

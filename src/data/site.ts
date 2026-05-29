@@ -59,7 +59,7 @@ export const navItems: NavItem[] = [
   { label: "Podcast", href: "/podcast" },
   { label: "Tools", href: "/tools" },
   { label: "Merch", href: "/merch" },
-  
+  { label: "SUPPORT", href: "/support" },
   { label: "Contact", href: "/contact" }
 ];
 
