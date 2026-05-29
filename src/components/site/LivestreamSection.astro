@@ -8,6 +8,12 @@ interface Props {
 }
 
 const { streams } = Astro.props;
+const youtubeChannelId = import.meta.env.YOUTUBE_CHANNEL_ID as string | undefined;
+const youtubeHref = youtubeChannelId
+  ? `https://www.youtube.com/channel/${youtubeChannelId}`
+  : "https://www.youtube.com/@OverwhelmedGamer";
+const twitchHref = "https://www.twitch.tv/theoverwhelmedgamer";
+const tiktokHref = "https://www.tiktok.com/@overwhelmed.gamer";
 ---
 
 <section id="schedule" class="space-y-8">
@@ -17,6 +23,51 @@ const { streams } = Astro.props;
     subtitle="Missed a stream? Jump into the latest sessions and keep your progress moving."
   />
 
+  <div class="stream-platforms" aria-label="Streaming platforms">
+    <p class="stream-platforms-label">Streaming on</p>
+    <div class="stream-platforms-list">
+      <a
+        href={youtubeHref}
+        class="stream-platform-badge"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Watch livestream content on YouTube"
+      >
+        <svg viewBox="0 0 24 24" class="stream-platform-icon" aria-hidden="true" focusable="false">
+          <path d="M21.6 7.2a2.8 2.8 0 0 0-2-2c-1.7-.45-7.6-.45-7.6-.45s-5.9 0-7.6.45a2.8 2.8 0 0 0-2 2C2 8.9 2 12 2 12s0 3.1.4 4.8a2.8 2.8 0 0 0 2 2c1.7.45 7.6.45 7.6.45s5.9 0 7.6-.45a2.8 2.8 0 0 0 2-2c.4-1.7.4-4.8.4-4.8s0-3.1-.4-4.8Z" fill="currentColor"></path>
+          <path d="M10 15.5V8.5l6 3.5-6 3.5Z" fill="var(--color-bg)"></path>
+        </svg>
+        <span>YouTube</span>
+      </a>
+      <a
+        href={twitchHref}
+        class="stream-platform-badge"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Watch livestream content on Twitch"
+      >
+        <svg viewBox="0 0 24 24" class="stream-platform-icon" aria-hidden="true" focusable="false">
+          <path d="M4 3h17v11.2l-4.2 4.2h-3.4L10 22v-3.6H6.8L4 14.6V3Zm2.2 1.8v9.1l1.8 1.8h3.8V18l2.3-2.3h3L19.8 13V4.8H6.2Z" fill="currentColor"></path>
+          <rect x="10" y="8" width="1.8" height="4.2" fill="currentColor"></rect>
+          <rect x="14.2" y="8" width="1.8" height="4.2" fill="currentColor"></rect>
+        </svg>
+        <span>Twitch</span>
+      </a>
+      <a
+        href={tiktokHref}
+        class="stream-platform-badge"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Watch livestream clips on TikTok"
+      >
+        <svg viewBox="0 0 24 24" class="stream-platform-icon" aria-hidden="true" focusable="false">
+          <path d="M14.2 3v10.1a3.6 3.6 0 1 1-3-3.54v2.3a1.46 1.46 0 1 0 .86 1.34V3h2.14c.35 1.68 1.7 3 3.42 3.33V8.5a5.58 5.58 0 0 1-3.42-1.17V3z" fill="currentColor"></path>
+        </svg>
+        <span>TikTok</span>
+      </a>
+    </div>
+  </div>
+
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
     {
       streams.map((stream) => (
@@ -25,3 +76,58 @@ const { streams } = Astro.props;
     }
   </div>
 </section>
+
+<style>
+  .stream-platforms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    align-items: center;
+  }
+
+  .stream-platforms-label {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-muted);
+  }
+
+  .stream-platforms-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .stream-platform-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
+    border-radius: 999px;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.78rem;
+    color: var(--color-text);
+    background: color-mix(in srgb, var(--color-bg) 86%, white 3%);
+    transition: transform 150ms ease, border-color 150ms ease, color 150ms ease, background 150ms ease;
+  }
+
+  .stream-platform-badge:hover,
+  .stream-platform-badge:focus-visible {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--color-accent) 72%, var(--color-border));
+    color: #fff0c8;
+    background: color-mix(in srgb, var(--color-accent) 16%, var(--color-bg) 84%);
+  }
+
+  .stream-platform-icon {
+    width: 0.92rem;
+    height: 0.92rem;
+  }
+
+  @media (max-width: 640px) {
+    .stream-platform-badge {
+      font-size: 0.74rem;
+      padding: 0.32rem 0.58rem;
+    }
+  }
+</style>

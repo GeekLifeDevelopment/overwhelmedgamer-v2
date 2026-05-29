@@ -9,6 +9,7 @@ const youtubeChannelId = import.meta.env.YOUTUBE_CHANNEL_ID as string | undefine
 const youtubeHref = youtubeChannelId
   ? `https://www.youtube.com/channel/${youtubeChannelId}`
   : "https://www.youtube.com/@OverwhelmedGamer";
+const twitchHref = "https://www.twitch.tv/theoverwhelmedgamer";
 ---
 
 <footer class="footer-shell">
@@ -38,6 +39,31 @@ const youtubeHref = youtubeChannelId
       >
         <svg viewBox="0 0 24 24" class="social-svg" aria-hidden="true" focusable="false">
           <path d="M19.2 5.2a15.4 15.4 0 0 0-3.82-1.2l-.18.36-.21.45a13.9 13.9 0 0 0-5.98 0L8.8 4.4l-.18-.36a15.4 15.4 0 0 0-3.82 1.2C2.4 8.9 1.75 12.5 2.07 16.05a15.7 15.7 0 0 0 4.69 2.38l1-1.63c-.55-.21-1.07-.47-1.56-.78l.37-.27c3 .93 6.24.93 9.24 0 .13.1.25.19.37.27-.49.31-1.01.57-1.56.78l1 1.63a15.7 15.7 0 0 0 4.69-2.38c.38-4.12-.64-7.69-2.99-10.85ZM9.58 13.9c-.91 0-1.66-.84-1.66-1.88s.73-1.88 1.66-1.88c.93 0 1.67.84 1.66 1.88 0 1.04-.73 1.88-1.66 1.88Zm4.84 0c-.91 0-1.66-.84-1.66-1.88s.73-1.88 1.66-1.88c.93 0 1.67.84 1.66 1.88 0 1.04-.73 1.88-1.66 1.88Z" fill="currentColor"></path>
+        </svg>
+      </a>
+      <a
+        href={youtubeHref}
+        class="social-link"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Follow on YouTube"
+      >
+        <svg viewBox="0 0 24 24" class="social-svg" aria-hidden="true" focusable="false">
+          <path d="M21.6 7.2a2.8 2.8 0 0 0-2-2c-1.7-.45-7.6-.45-7.6-.45s-5.9 0-7.6.45a2.8 2.8 0 0 0-2 2C2 8.9 2 12 2 12s0 3.1.4 4.8a2.8 2.8 0 0 0 2 2c1.7.45 7.6.45 7.6.45s5.9 0 7.6-.45a2.8 2.8 0 0 0 2-2c.4-1.7.4-4.8.4-4.8s0-3.1-.4-4.8Z" fill="currentColor"></path>
+          <path d="M10 15.5V8.5l6 3.5-6 3.5Z" fill="var(--color-bg)"></path>
+        </svg>
+      </a>
+      <a
+        href={twitchHref}
+        class="social-link"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Follow on Twitch"
+      >
+        <svg viewBox="0 0 24 24" class="social-svg" aria-hidden="true" focusable="false">
+          <path d="M4 3h17v11.2l-4.2 4.2h-3.4L10 22v-3.6H6.8L4 14.6V3Zm2.2 1.8v9.1l1.8 1.8h3.8V18l2.3-2.3h3L19.8 13V4.8H6.2Z" fill="currentColor"></path>
+          <rect x="10" y="8" width="1.8" height="4.2" fill="currentColor"></rect>
+          <rect x="14.2" y="8" width="1.8" height="4.2" fill="currentColor"></rect>
         </svg>
       </a>
       <a

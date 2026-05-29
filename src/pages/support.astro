@@ -17,7 +17,7 @@ const supportOptions = [
   {
     title: "Patreon",
     description:
-      "Join through Patreon to become a Community Supporter and unlock private community access plus member-driven content perks.",
+      "Join through Patreon to become a Community Supporter and unlock private Discord access, member polls, game suggestions, podcast opportunities, and more. Starting at $1/month.",
     ctaLabel: "Join on Patreon",
     href: "https://www.patreon.com/c/overwhelmedgamer/membership"
   },
@@ -59,8 +59,50 @@ const supportOptions = [
     <section class="feature-card space-y-5" aria-labelledby="support-tier-title">
       <div class="space-y-2">
         <h2 id="support-tier-title" class="font-display text-2xl text-[var(--color-text)] sm:text-3xl">
-          Community Supporter - $1/month
+          Community Supporter
         </h2>
+        <p class="platform-summary text-sm leading-relaxed text-[var(--color-muted)]">
+          Join through Patreon, YouTube, Facebook, or Twitch and receive the same Community
+          Supporter benefits.
+        </p>
+        <div class="platform-links" aria-label="Community Supporter platforms">
+          <a
+            href="https://www.patreon.com/c/overwhelmedgamer/membership"
+            class="platform-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Join Community Supporter through Patreon"
+          >
+            <span class="platform-dot" aria-hidden="true">P</span>Patreon
+          </a>
+          <a
+            href="https://www.youtube.com/channel/UCU5yHwDYrLbAPI2UuAOV0lw/join"
+            class="platform-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Join Community Supporter through YouTube"
+          >
+            <span class="platform-dot" aria-hidden="true">Y</span>YouTube
+          </a>
+          <a
+            href="https://www.facebook.com/OverwhelmedGamer/subscribe/"
+            class="platform-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Join Community Supporter through Facebook"
+          >
+            <span class="platform-dot" aria-hidden="true">F</span>Facebook
+          </a>
+          <a
+            href="https://www.twitch.tv/theoverwhelmedgamer"
+            class="platform-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Join Community Supporter through Twitch"
+          >
+            <span class="platform-dot" aria-hidden="true">T</span>Twitch
+          </a>
+        </div>
         <p class="text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">
           Become a Community Supporter and get access to the private Discord, member polls, game
           suggestion opportunities, podcast questions and shout-outs, behind-the-scenes updates, and
@@ -87,9 +129,26 @@ const supportOptions = [
         }
       </div>
 
-      <p class="support-note text-sm text-[var(--color-muted)]">
-        No matter where you subscribe, the goal is the same: one community hub through Discord.
-      </p>
+      <div class="support-note space-y-2">
+        <p class="text-sm text-[var(--color-muted)]">
+          No matter where you subscribe&mdash;Patreon, YouTube, Facebook, or Twitch&mdash;you'll receive access
+          to the same Community Supporter community, including private Discord access, member polls,
+          game suggestions, podcast participation opportunities, and community perks.
+        </p>
+        <p class="text-sm text-[var(--color-muted)]">
+          Twitch subscribers can request Community Supporter access through Discord and receive the
+          same community benefits.
+        </p>
+        <a
+          href="https://www.twitch.tv/theoverwhelmedgamer"
+          class="twitch-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Stream with us on Twitch"
+        >
+          Stream with us on Twitch
+        </a>
+      </div>
     </section>
   </main>
 
@@ -117,5 +176,74 @@ const supportOptions = [
   .support-note {
     border-top: 1px solid color-mix(in srgb, var(--color-accent) 26%, var(--color-border));
     padding-top: 0.9rem;
+  }
+
+  .platform-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.7rem;
+    align-items: center;
+  }
+
+  .platform-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--color-muted);
+    font-size: 0.84rem;
+    transition: color 150ms ease;
+  }
+
+  .platform-link:hover,
+  .platform-link:focus-visible {
+    color: var(--color-accent);
+  }
+
+  .platform-link:not(:last-child)::after {
+    content: "•";
+    margin-left: 0.35rem;
+    color: color-mix(in srgb, var(--color-accent) 58%, var(--color-muted));
+  }
+
+  .platform-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.05rem;
+    height: 1.05rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--color-accent) 42%, var(--color-border));
+    background: color-mix(in srgb, var(--color-bg) 88%, white 3%);
+    color: color-mix(in srgb, var(--color-accent) 78%, white 22%);
+    font-size: 0.62rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .twitch-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.82rem;
+    color: color-mix(in srgb, var(--color-accent) 78%, white 18%);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 30%, var(--color-border));
+    border-radius: 999px;
+    padding: 0.32rem 0.7rem;
+    width: fit-content;
+    transition: color 150ms ease, border-color 150ms ease, background 150ms ease;
+  }
+
+  .twitch-link:hover,
+  .twitch-link:focus-visible {
+    color: #fff0c8;
+    border-color: color-mix(in srgb, var(--color-accent) 62%, var(--color-border));
+    background: color-mix(in srgb, var(--color-accent) 12%, var(--color-bg) 88%);
+  }
+
+  @media (max-width: 640px) {
+    .platform-summary,
+    .platform-link,
+    .twitch-link {
+      font-size: 0.8rem;
+    }
   }
 </style>
