@@ -32,10 +32,9 @@ The build uses a local cache file at `.cache/youtube-homepage.json` to reduce AP
 
 Copy `.env.example` to `.env` and fill values:
 
-- `YOUTUBE_DATA_API_KEY`
+- `YOUTUBE_API_KEY` or `YOUTUBE_DATA_API_KEY`
 - `YOUTUBE_REVIEWS_PLAYLIST_ID`
-- `YOUTUBE_LIVESTREAMS_PLAYLIST_ID`
-- `YOUTUBE_PODCAST_PLAYLIST_ID`
+- `YOUTUBE_CHANNEL_ID` or `YOUTUBE_LIVESTREAMS_PLAYLIST_ID`
 
 ### Optional Environment Variables
 
@@ -46,3 +45,5 @@ Copy `.env.example` to `.env` and fill values:
 	- Default is 45 minutes
 
 If any required YouTube variable is missing or the API request fails, homepage sections fall back to local placeholder data in `src/data/media.ts`.
+
+The reviews section uses the playlist ID directly. The recent livestreams section prefers the channel ID search API, but will fall back to the livestream playlist if you provide one instead.

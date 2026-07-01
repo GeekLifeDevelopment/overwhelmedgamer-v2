@@ -79,28 +79,53 @@ type SearchListResponse = {
   }>;
 };
 
-export async function getLatestLivestreams(maxResults = 6): Promise<MediaCardItem[]> {
-  const apiKey = import.meta.env.YOUTUBE_API_KEY as string | undefined;
-  const channelId = import.meta.env.YOUTUBE_CHANNEL_ID as string | undefined;
+function getYouTubeApiKey(): string | undefined {
+  return (
+    (import.meta.env.YOUTUBE_API_KEY as string | undefined) ??
+    (import.meta.env.YOUTUBE_DATA_API_KEY as string | undefined)
+  );
+}
 
-  if (!apiKey || !channelId) {
+function getYouTubeChannelId(): string | undefined {
+  return import.meta.env.YOUTUBE_CHANNEL_ID as string | undefined;
+}
+
+function getYouTubeReviewsPlaylistId(): string | undefined {
+  return import.meta.env.YOUTUBE_REVIEWS_PLAYLIST_ID as string | undefined;
+}
+
+function getYouTubeLivestreamPlaylistId(): string | undefined {
+  return import.meta.env.YOUTUBE_LIVESTREAMS_PLAYLIST_ID as string | undefined;
+}
+
+export async function getLatestLivestreams(maxResults = 6): Promise<MediaCardItem[]> {
+  const apiKey = getYouTubeApiKey();
+  const channelId = getYouTubeChannelId();
+  const playlistId = getYouTubeLivestreamPlaylistId();
+
+  if (!apiKey || (!channelId && !playlistId)) {
     console.warn(
-      "[youtube] Missing YOUTUBE_API_KEY or YOUTUBE_CHANNEL_ID — skipping livestream fetch."
+      "[youtube] Missing YOUTUBE_API_KEY/YOUTUBE_DATA_API_KEY or YOUTUBE_CHANNEL_ID/YOUTUBE_LIVESTREAMS_PLAYLIST_ID — skipping livestream fetch."
     );
     return [];
   }
 
-  const params = new URLSearchParams({
-    part: "snippet",
-    channelId,
-    key: apiKey,
-    eventType: "completed",
-    type: "video",
-    order: "date",
-    maxResults: String(maxResults)
-  });
-
-  const url = `https://www.googleapis.com/youtube/v3/search?${params.toString()}`;
+  const url = channelId
+    ? `https://www.googleapis.com/youtube/v3/search?${new URLSearchParams({
+        part: "snippet",
+        channelId,
+        key: apiKey,
+        eventType: "completed",
+        type: "video",
+        order: "date",
+        maxResults: String(maxResults)
+      }).toString()}`
+    : `https://www.googleapis.com/youtube/v3/playlistItems?${new URLSearchParams({
+        part: "snippet",
+        playlistId: playlistId ?? "",
+        key: apiKey,
+        maxResults: String(maxResults)
+      }).toString()}`;
 
   let json: SearchListResponse;
   try {
@@ -119,7 +144,7 @@ export async function getLatestLivestreams(maxResults = 6): Promise<MediaCardIte
 
   return items
     .filter((item) => {
-      const videoId = item.id?.videoId;
+      const videoId = item.id?.videoId ?? item.snippet?.resourceId?.videoId;
       const title = item.snippet?.title?.toLowerCase() ?? "";
       return Boolean(videoId) && title !== "private video" && title !== "deleted video";
     })
@@ -131,17 +156,17 @@ export async function getLatestLivestreams(maxResults = 6): Promise<MediaCardIte
       thumbnail: pickThumbnail(item.snippet?.thumbnails ?? {}),
       date: formatPublishedDate(item.snippet?.publishedAt),
       platform: "YouTube Live",
-      externalLink: `https://www.youtube.com/watch?v=${item.id?.videoId}`
+      externalLink: `https://www.youtube.com/watch?v=${item.id?.videoId ?? item.snippet?.resourceId?.videoId}`
     }));
 }
 
 export async function getLatestVideos(maxResults = 6): Promise<MediaCardItem[]> {
-  const apiKey = import.meta.env.YOUTUBE_API_KEY as string | undefined;
-  const playlistId = import.meta.env.YOUTUBE_REVIEWS_PLAYLIST_ID as string | undefined;
+  const apiKey = getYouTubeApiKey();
+  const playlistId = getYouTubeReviewsPlaylistId();
 
   if (!apiKey || !playlistId) {
     console.warn(
-      "[youtube] Missing YOUTUBE_API_KEY or YOUTUBE_REVIEWS_PLAYLIST_ID — skipping API fetch. " +
+      "[youtube] Missing YOUTUBE_API_KEY/YOUTUBE_DATA_API_KEY or YOUTUBE_REVIEWS_PLAYLIST_ID — skipping API fetch. " +
       "Add these to your .env file to load live review videos."
     );
     return [];
