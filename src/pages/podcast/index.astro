@@ -1,12 +1,11 @@
 ---
-import HeroSection from "../../components/site/HeroSection.astro";
 import SiteFooter from "../../components/site/SiteFooter.astro";
 import SiteHeader from "../../components/site/SiteHeader.astro";
 import PodcastEpisodeCard from "../../components/ui/PodcastEpisodeCard.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { latestPodcastEpisodes as fallbackPodcastEpisodes } from "../../data/media";
 import { navItems, podcastFeature, siteMeta } from "../../data/site";
-import { getLatestPodcastEpisodes } from "../../lib/podcast";
+import { getLatestPodcastEpisodes, PODCAST_PLATFORM_LINKS } from "../../lib/podcast";
 
 const SECTION_CARD_LIMIT = 12;
 const fetchedEpisodes = await getLatestPodcastEpisodes(SECTION_CARD_LIMIT);
@@ -111,42 +110,55 @@ const podcastEpisodeSchemaTemplate = {
         <h2 class="font-display text-3xl text-[var(--color-text)] sm:text-4xl">Retro Gaming Podcast Episodes</h2>
       </div>
 
-      <div class="grid gap-4 lg:grid-cols-[1.1fr_0.9fr] lg:items-stretch">
-        <a
-          href={featuredEpisode.externalLink}
-          class="media-card flex h-full flex-col justify-between"
-          aria-label={`Open ${featuredEpisode.title}`}
-        >
+      <div class="grid items-start gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+        <article class="media-card podcast-index-featured-card">
           <div class="media-thumbnail-wrap">
-            <img
-              src={featuredEpisode.thumbnail}
-              alt={featuredThumbnailAlt}
-              class="media-thumbnail"
-              loading="lazy"
-              decoding="async"
-            />
+            <a href={featuredEpisode.externalLink} aria-label={`Open ${featuredEpisode.title}`}>
+              <img
+                src={featuredEpisode.thumbnail}
+                alt={featuredThumbnailAlt}
+                class="media-thumbnail"
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
             <span class="media-label">Featured</span>
           </div>
 
           <div class="space-y-3">
-            <h3 class="font-display text-2xl text-[var(--color-text)] sm:text-3xl">{featuredEpisode.title}</h3>
-            <p class="text-sm leading-relaxed text-[var(--color-muted)]">{featuredEpisode.excerpt ?? featuredEpisode.description}</p>
+            <a href={featuredEpisode.externalLink} class="block" aria-label={`Open ${featuredEpisode.title}`}>
+              <h3 class="font-display text-2xl text-[var(--color-text)] sm:text-3xl">{featuredEpisode.title}</h3>
+            </a>
+            <p class="text-sm leading-relaxed text-[var(--color-muted)]">
+              {featuredEpisode.summary ?? featuredEpisode.description}
+            </p>
+            {featuredEpisode.notesHtml ? (
+              <details class="podcast-index-notes">
+                <summary class="tool-cta inline-flex cursor-pointer">Read Episode Notes</summary>
+                <div class="episode-notes mt-3" set:html={featuredEpisode.notesHtml}></div>
+              </details>
+            ) : null}
             <p class="text-xs uppercase tracking-[0.13em] text-[var(--color-muted)]">{featuredEpisode.date} • {featuredEpisode.platform}</p>
           </div>
-        </a>
+        </article>
 
-        <div class="feature-card flex h-full flex-col justify-between gap-6">
-          <div class="space-y-4">
+        <div class="feature-card podcast-listen-panel">
+          <div class="space-y-3">
             <span class="chip">Listen Anywhere</span>
-            <h2 class="font-display text-3xl text-[var(--color-text)]">Listen Anywhere</h2>
-            <p class="max-w-2xl text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">
-              Open any episode, hit play, and keep browsing without leaving the site.
+            <h2 class="font-display text-2xl text-[var(--color-text)]">Listen Anywhere</h2>
+            <p class="text-sm leading-relaxed text-[var(--color-muted)]">
+              Open the full episode page or subscribe through the Riverside feed.
             </p>
           </div>
 
-          <div class="flex flex-wrap gap-3">
+          <div class="flex flex-wrap gap-2">
             <a href={featuredEpisode.externalLink} class="accent-button">Open Episode Page</a>
-            <a href={featuredEpisode.sourceLink ?? featuredEpisode.externalLink} class="ghost-button">Open Original Feed</a>
+            <a
+              href={PODCAST_PLATFORM_LINKS.rss ?? featuredEpisode.sourceLink ?? featuredEpisode.externalLink}
+              class="ghost-button"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Open Riverside Feed</a>
           </div>
         </div>
       </div>
@@ -159,3 +171,38 @@ const podcastEpisodeSchemaTemplate = {
 
   <SiteFooter brand={siteMeta.title} />
 </BaseLayout>
+
+<style>
+  .podcast-index-featured-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .podcast-index-featured-card .media-thumbnail-wrap {
+    margin-bottom: 0;
+  }
+
+  .podcast-listen-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .podcast-index-notes summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .episode-notes p {
+    margin: 0.85rem 0;
+    line-height: 1.72;
+    color: var(--color-muted);
+  }
+
+  .episode-notes a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    overflow-wrap: anywhere;
+  }
+</style>

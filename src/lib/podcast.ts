@@ -1,6 +1,6 @@
 import type { MediaCardItem } from "../data/media";
 
-const DEFAULT_PODCAST_FEED_URL = "https://feed.podbean.com/jasonft/feed.xml";
+const DEFAULT_PODCAST_FEED_URL = "https://api.riverside.com/hosting/Rspwhe3G.rss";
 
 export const PODCAST_PLATFORM_LINKS = {
   spotify: import.meta.env.PODCAST_SPOTIFY_URL as string | undefined,
@@ -219,6 +219,18 @@ export async function getLatestPodcastEpisodes(maxResults = 3): Promise<MediaCar
 
     const items = Array.from(xml.matchAll(/<item\b[\s\S]*?<\/item>/gi))
       .map((match) => match[0])
+      .sort((leftItem, rightItem) => {
+        const leftDate = Date.parse(
+          extractTagValue(leftItem, "pubDate") ?? extractTagValue(leftItem, "dc:date") ?? ""
+        );
+        const rightDate = Date.parse(
+          extractTagValue(rightItem, "pubDate") ?? extractTagValue(rightItem, "dc:date") ?? ""
+        );
+
+        if (Number.isNaN(leftDate)) return 1;
+        if (Number.isNaN(rightDate)) return -1;
+        return rightDate - leftDate;
+      })
       .slice(0, maxResults);
 
     return items
@@ -247,7 +259,7 @@ export async function getLatestPodcastEpisodes(maxResults = 3): Promise<MediaCar
           description,
           thumbnail,
           date: formatPublishedDate(publishedAt),
-          platform: "Podbean",
+          platform: "Riverside",
           externalLink: `/podcast/${slug}`,
           slug,
           audioUrl,

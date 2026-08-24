@@ -17,7 +17,6 @@ export type MediaCardItem = {
     apple?: string;
     youtube?: string;
     rss?: string;
-    podbean?: string;
   };
 };
 
@@ -94,7 +93,7 @@ export const latestPodcastEpisodes: MediaCardItem[] = [
       spotify: "https://open.spotify.com/show/2QjYq0AzmWPuqLz6kTZIht",
       apple: "https://podcasts.apple.com/us/podcast/overwhelmed-gamer/id1752872724",
       youtube: "https://www.youtube.com/@overwhelmedgamer",
-      rss: "https://feed.podbean.com/jasonft/feed.xml"
+      rss: "https://api.riverside.com/hosting/Rspwhe3G.rss"
     }
   },
   {
@@ -109,7 +108,7 @@ export const latestPodcastEpisodes: MediaCardItem[] = [
       spotify: "https://open.spotify.com/show/2QjYq0AzmWPuqLz6kTZIht",
       apple: "https://podcasts.apple.com/us/podcast/overwhelmed-gamer/id1752872724",
       youtube: "https://www.youtube.com/@overwhelmedgamer",
-      rss: "https://feed.podbean.com/jasonft/feed.xml"
+      rss: "https://api.riverside.com/hosting/Rspwhe3G.rss"
     }
   },
   {
@@ -124,7 +123,7 @@ export const latestPodcastEpisodes: MediaCardItem[] = [
       spotify: "https://open.spotify.com/show/2QjYq0AzmWPuqLz6kTZIht",
       apple: "https://podcasts.apple.com/us/podcast/overwhelmed-gamer/id1752872724",
       youtube: "https://www.youtube.com/@overwhelmedgamer",
-      rss: "https://feed.podbean.com/jasonft/feed.xml"
+      rss: "https://api.riverside.com/hosting/Rspwhe3G.rss"
     }
   }
 ];

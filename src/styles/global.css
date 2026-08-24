@@ -387,6 +387,26 @@ body {
 	background: rgba(0, 0, 0, 0.35);
 }
 
+.podcast-compact-thumbnail-wrap {
+	aspect-ratio: 1 / 1;
+}
+
+.podcast-compact-thumbnail {
+	object-fit: contain;
+	background: rgba(0, 0, 0, 0.35);
+}
+
+.podcast-compact-card {
+	min-height: 0;
+	padding: 1rem;
+}
+
+@media (min-width: 52rem) {
+	.podcast-compact-card {
+		flex: 1;
+	}
+}
+
 .podcast-featured-thumbnail-shell {
 	display: flex;
 	flex-direction: column;

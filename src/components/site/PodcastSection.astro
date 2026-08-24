@@ -131,7 +131,7 @@ const featuredDescription = truncateAtWord(
     <!-- Recent episodes: compact horizontal cards -->
     <div class="flex flex-col gap-3">
       {previousEpisodes.map((episode) => (
-        <article class="feature-card overflow-hidden">
+        <article class="feature-card podcast-compact-card overflow-hidden">
           <div class="flex items-start gap-3">
 
             <!-- Small thumbnail -->
@@ -140,11 +140,11 @@ const featuredDescription = truncateAtWord(
               aria-label={`Open ${episode.title}`}
               class="block w-24 shrink-0"
             >
-              <div class="media-thumbnail-wrap mb-0">
+              <div class="media-thumbnail-wrap podcast-compact-thumbnail-wrap mb-0">
                 <img
                   src={episode.thumbnail}
                   alt=""
-                  class="media-thumbnail"
+                  class="media-thumbnail podcast-compact-thumbnail"
                   loading="lazy"
                   decoding="async"
                 />
