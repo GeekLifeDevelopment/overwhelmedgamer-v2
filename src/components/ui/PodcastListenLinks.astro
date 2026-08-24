@@ -4,9 +4,10 @@ import type { MediaCardItem } from "../../data/media";
 
 interface Props {
   episode: MediaCardItem;
+  bare?: boolean;
 }
 
-const { episode } = Astro.props;
+const { episode, bare = false } = Astro.props;
 const platformLinks = episode.links || {};
 
 // Define platform order and metadata
@@ -29,17 +30,35 @@ if (availablePlatforms.length === 0) {
 
 {
   availablePlatforms.length > 0 && (
-    <section class="feature-card space-y-4">
-      <p class="section-kicker">Listen On</p>
-      <div class="flex flex-wrap gap-3">
-        {availablePlatforms.map((platform) => (
-          <PodcastListenButton
-            client:load
-            platform={platform.key}
-            url={platformLinks[platform.key] || ""}
-          />
-        ))}
+    bare ? (
+      <div class="space-y-3">
+        <p class="text-sm text-[var(--color-muted)]">Subscribe on your favorite platform.</p>
+        <div class="flex flex-wrap gap-2.5">
+          {availablePlatforms.map((platform) => (
+            <PodcastListenButton
+              client:load
+              platform={platform.key}
+              url={platformLinks[platform.key] || ""}
+            />
+          ))}
+        </div>
       </div>
-    </section>
+    ) : (
+      <section class="feature-card podcast-listen-card space-y-3">
+        <div>
+          <p class="section-kicker">Listen On</p>
+          <p class="text-sm text-[var(--color-muted)]">Subscribe on your favorite platform.</p>
+        </div>
+        <div class="flex flex-wrap gap-2.5">
+          {availablePlatforms.map((platform) => (
+            <PodcastListenButton
+              client:load
+              platform={platform.key}
+              url={platformLinks[platform.key] || ""}
+            />
+          ))}
+        </div>
+      </section>
+    )
   )
 }

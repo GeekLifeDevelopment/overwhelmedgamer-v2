@@ -2,10 +2,11 @@
 import SiteFooter from "../../components/site/SiteFooter.astro";
 import SiteHeader from "../../components/site/SiteHeader.astro";
 import PodcastEpisodeCard from "../../components/ui/PodcastEpisodeCard.astro";
+import PodcastListenLinks from "../../components/ui/PodcastListenLinks.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { latestPodcastEpisodes as fallbackPodcastEpisodes } from "../../data/media";
 import { navItems, podcastFeature, siteMeta } from "../../data/site";
-import { getLatestPodcastEpisodes, PODCAST_PLATFORM_LINKS } from "../../lib/podcast";
+import { getLatestPodcastEpisodes } from "../../lib/podcast";
 
 const SECTION_CARD_LIMIT = 12;
 const fetchedEpisodes = await getLatestPodcastEpisodes(SECTION_CARD_LIMIT);
@@ -147,19 +148,13 @@ const podcastEpisodeSchemaTemplate = {
             <span class="chip">Listen Anywhere</span>
             <h2 class="font-display text-2xl text-[var(--color-text)]">Listen Anywhere</h2>
             <p class="text-sm leading-relaxed text-[var(--color-muted)]">
-              Open the full episode page or subscribe through the Riverside feed.
+              Open the full episode page or subscribe on your favorite platform.
             </p>
           </div>
 
-          <div class="flex flex-wrap gap-2">
-            <a href={featuredEpisode.externalLink} class="accent-button">Open Episode Page</a>
-            <a
-              href={PODCAST_PLATFORM_LINKS.rss ?? featuredEpisode.sourceLink ?? featuredEpisode.externalLink}
-              class="ghost-button"
-              target="_blank"
-              rel="noopener noreferrer"
-            >Open Riverside Feed</a>
-          </div>
+          <a href={featuredEpisode.externalLink} class="accent-button self-start">Open Episode Page</a>
+
+          <PodcastListenLinks episode={featuredEpisode} bare />
         </div>
       </div>
 

@@ -544,36 +544,58 @@ body {
 }
 
 /* Podcast Listen Button Platform Styles */
-.podcast-listen-spotify {
-	background-color: #1db954;
+.podcast-listen-card {
+	min-height: 0;
+	padding: 1.15rem 1.25rem;
 }
 
-.podcast-listen-spotify:hover {
-	background-color: #1ed760;
+.podcast-listen-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.65rem;
+	border-radius: 999px;
+	border: 1px solid var(--color-border);
+	background: rgba(255, 255, 255, 0.03);
+	padding: 0.4rem 1rem 0.4rem 0.4rem;
+	font-size: 0.82rem;
+	font-weight: 600;
+	color: var(--color-text);
+	transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
 }
 
-.podcast-listen-apple {
-	background-color: #a2845d;
+.podcast-listen-button:hover,
+.podcast-listen-button:focus-visible {
+	transform: translateY(-2px);
+	background: rgba(255, 255, 255, 0.06);
+	border-color: color-mix(in srgb, var(--color-accent) 55%, var(--color-border));
+	outline: none;
 }
 
-.podcast-listen-apple:hover {
-	background-color: #b79869;
+.podcast-listen-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.85rem;
+	height: 1.85rem;
+	flex-shrink: 0;
+	border-radius: 999px;
+	color: #ffffff;
 }
 
-.podcast-listen-youtube {
-	background-color: #ff0000;
+.podcast-listen-spotify .podcast-listen-icon {
+	background: #1db954;
 }
 
-.podcast-listen-youtube:hover {
-	background-color: #cc0000;
+.podcast-listen-apple .podcast-listen-icon {
+	background: linear-gradient(135deg, #f452ff, #832bc1);
 }
 
-.podcast-listen-rss {
-	background-color: #ff6600;
+.podcast-listen-youtube .podcast-listen-icon {
+	background: #ff0000;
 }
 
-.podcast-listen-rss:hover {
-	background-color: #ff7f1a;
+.podcast-listen-rss .podcast-listen-icon {
+	background: #ff6600;
 }
 
 @keyframes rise-in {

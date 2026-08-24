@@ -1,6 +1,7 @@
 ---
 import type { MediaCardItem } from "../../data/media";
 import type { PromoBlock } from "../../data/site";
+import PodcastListenLinks from "../ui/PodcastListenLinks.astro";
 import SectionHeading from "../ui/SectionHeading.astro";
 
 interface Props {
@@ -167,4 +168,6 @@ const featuredDescription = truncateAtWord(
     </div>
 
   </div>
+
+  {featuredEpisode ? <PodcastListenLinks episode={featuredEpisode} /> : null}
 </section>

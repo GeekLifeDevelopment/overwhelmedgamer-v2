@@ -34,7 +34,7 @@ const platformConfig = {
         className="h-4 w-4"
         aria-hidden="true"
       >
-        <path d="M18.94 9.857c-.073-1.623-.526-3.125-1.308-4.385C16.562 3.49 15.265 2.547 13.605 2.28c-1.536-.256-3.108-.137-4.59.338-1.482.475-2.853 1.188-4.066 2.114C3.636 5.757 2.647 7.206 2.117 8.807c-.53 1.6-.627 3.287-.289 4.924.338 1.637.986 3.188 1.924 4.563.938 1.376 2.138 2.516 3.54 3.345.805.483 1.666.872 2.562 1.167.896.295 1.83.502 2.77.618.941.116 1.894.14 2.836.074.942-.068 1.873-.268 2.77-.6.897-.332 1.759-.786 2.566-1.352.807-.566 1.547-1.24 2.195-1.998 1.297-1.515 2.164-3.443 2.514-5.494.35-2.051.176-4.164-.52-6.142zm-6.16 8.35c-1.12 0-2.14-.445-2.902-1.167-.762-.722-1.192-1.7-1.192-2.728 0-1.028.43-2.006 1.192-2.728.762-.722 1.783-1.167 2.902-1.167 1.12 0 2.14.445 2.902 1.167.762.722 1.192 1.7 1.192 2.728 0 1.028-.43 2.006-1.192 2.728-.762.722-1.783 1.167-2.902 1.167z" />
+        <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21H9v2h6v-2h-2v-3.08A7 7 0 0 0 19 11h-2Z" />
       </svg>
     )
   },
@@ -89,9 +89,9 @@ export const PodcastListenButton: React.FC<PodcastListenButtonProps> = ({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={displayAriaLabel}
-      className={`inline-flex items-center gap-2 rounded-lg px-4 py-2.5 font-medium text-white transition-all duration-200 hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] ${config.className}`}
+      className={`podcast-listen-button ${config.className}`}
     >
-      {config.svg}
+      <span className="podcast-listen-icon">{config.svg}</span>
       <span>{displayLabel}</span>
     </a>
   );
