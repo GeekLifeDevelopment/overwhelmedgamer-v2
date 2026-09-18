@@ -79,10 +79,10 @@ const websiteSchema = {
 	}
 };
 
-const reviewVideosSchema = {
+const latestVideosSchema = {
 	"@context": "https://schema.org",
 	"@type": "ItemList",
-	name: "Newest Review Videos",
+	name: "Newest Videos from the Channel",
 	itemListOrder: "https://schema.org/ItemListOrderDescending",
 	numberOfItems: latestVideos.length,
 	itemListElement: latestVideos.map((video, index) => ({
@@ -113,7 +113,7 @@ const reviewVideosSchema = {
 	ogTitle={homeTitle}
 	ogDescription={homeDescription}
 	ogImage={homeOgImage}
-	jsonLd={[websiteSchema, reviewVideosSchema]}
+	jsonLd={[websiteSchema, latestVideosSchema]}
 >
 	<SiteHeader brand={siteMeta.title} navItems={navItems} />
 

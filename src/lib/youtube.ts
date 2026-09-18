@@ -20,6 +20,16 @@ type PlaylistItemsResponse = {
   }>;
 };
 
+type PlaylistsResponse = {
+  items?: Array<{
+    id?: string;
+    snippet?: {
+      title?: string;
+    };
+  }>;
+  nextPageToken?: string;
+};
+
 function pickThumbnail(thumbnails: Thumbnails): string {
   return (
     thumbnails.maxres?.url ??
@@ -90,8 +100,117 @@ function getYouTubeChannelId(): string | undefined {
   return import.meta.env.YOUTUBE_CHANNEL_ID as string | undefined;
 }
 
-function getYouTubeReviewsPlaylistId(): string | undefined {
-  return import.meta.env.YOUTUBE_REVIEWS_PLAYLIST_ID as string | undefined;
+function getYouTubeLatestVideosPlaylistIds(): string[] {
+  const csv = import.meta.env.YOUTUBE_LATEST_VIDEOS_PLAYLIST_IDS as string | undefined;
+  const csvIds = csv
+    ? csv
+        .split(",")
+        .map((value) => value.trim())
+        .filter(Boolean)
+    : [];
+
+  const namedIds = [
+    import.meta.env.YOUTUBE_GAMING_DISCUSSION_PLAYLIST_ID as string | undefined,
+    import.meta.env.YOUTUBE_LATE_TO_THE_GAME_PLAYLIST_ID as string | undefined,
+    (import.meta.env.YOUTUBE_HOMEBREW_INDIE_HEROS_PLAYLIST_ID as string | undefined) ??
+      (import.meta.env.YOUTUBE_HOMEBREW_INDIE_HEROES_PLAYLIST_ID as string | undefined)
+  ].filter((value): value is string => Boolean(value));
+
+  return [...new Set([...csvIds, ...namedIds])];
+}
+
+const TARGET_LATEST_VIDEO_PLAYLIST_MATCHERS = [
+  {
+    role: "gaming-discussion",
+    matches: (name: string) => name.includes("gaming") && name.includes("discussion")
+  },
+  {
+    role: "late-to-the-game",
+    matches: (name: string) => name.includes("late") && name.includes("game")
+  },
+  {
+    role: "homebrew-indie-heros",
+    matches: (name: string) =>
+      name.includes("homebrew") &&
+      name.includes("indie") &&
+      (name.includes("heros") || name.includes("heroes"))
+  }
+] as const;
+
+function normalizePlaylistName(name?: string): string {
+  if (!name) return "";
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+async function discoverLatestVideoPlaylistIds(
+  apiKey: string,
+  channelId: string
+): Promise<string[]> {
+  const discoveredByRole = new Map<string, string>();
+  let pageToken: string | undefined;
+  let pageCount = 0;
+
+  while (pageCount < 4) {
+    const params = new URLSearchParams({
+      part: "snippet",
+      channelId,
+      maxResults: "50",
+      key: apiKey
+    });
+
+    if (pageToken) {
+      params.set("pageToken", pageToken);
+    }
+
+    const url = `https://www.googleapis.com/youtube/v3/playlists?${params.toString()}`;
+
+    let json: PlaylistsResponse;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        console.warn(
+          `[youtube] Playlist discovery responded with ${response.status} — skipping discovery.`
+        );
+        return [];
+      }
+
+      json = (await response.json()) as PlaylistsResponse;
+    } catch (err) {
+      console.warn("[youtube] Playlist discovery failed:", err);
+      return [];
+    }
+
+    for (const item of json.items ?? []) {
+      const normalizedTitle = normalizePlaylistName(item.snippet?.title);
+      const playlistId = item.id;
+      if (!playlistId) {
+        continue;
+      }
+
+      for (const matcher of TARGET_LATEST_VIDEO_PLAYLIST_MATCHERS) {
+        if (matcher.matches(normalizedTitle)) {
+          discoveredByRole.set(matcher.role, playlistId);
+        }
+      }
+    }
+
+    if (discoveredByRole.size === TARGET_LATEST_VIDEO_PLAYLIST_MATCHERS.length) {
+      break;
+    }
+
+    pageToken = json.nextPageToken;
+    if (!pageToken) {
+      break;
+    }
+
+    pageCount += 1;
+  }
+
+  return [...new Set(discoveredByRole.values())];
 }
 
 function getYouTubeLivestreamPlaylistId(): string | undefined {
@@ -162,54 +281,101 @@ export async function getLatestLivestreams(maxResults = 6): Promise<MediaCardIte
 
 export async function getLatestVideos(maxResults = 6): Promise<MediaCardItem[]> {
   const apiKey = getYouTubeApiKey();
-  const playlistId = getYouTubeReviewsPlaylistId();
+  const channelId = getYouTubeChannelId();
+  const configuredPlaylistIds = getYouTubeLatestVideosPlaylistIds();
+  let playlistIds = configuredPlaylistIds;
 
-  if (!apiKey || !playlistId) {
+  if (apiKey && channelId) {
+    const discoveredPlaylistIds = await discoverLatestVideoPlaylistIds(apiKey, channelId);
+    playlistIds = [...new Set([...configuredPlaylistIds, ...discoveredPlaylistIds])];
+  }
+
+  if (!apiKey || playlistIds.length === 0) {
     console.warn(
-      "[youtube] Missing YOUTUBE_API_KEY/YOUTUBE_DATA_API_KEY or YOUTUBE_REVIEWS_PLAYLIST_ID — skipping API fetch. " +
-      "Add these to your .env file to load live review videos."
+      "[youtube] Missing YOUTUBE_API_KEY/YOUTUBE_DATA_API_KEY or latest-videos playlist IDs — skipping API fetch. " +
+      "Add YOUTUBE_LATEST_VIDEOS_PLAYLIST_IDS (comma-separated), set the three specific playlist vars, or provide YOUTUBE_CHANNEL_ID so playlists can be discovered by name."
     );
     return [];
   }
 
-  const params = new URLSearchParams({
-    part: "snippet",
-    playlistId,
-    maxResults: String(maxResults),
-    key: apiKey
-  });
+  const perPlaylistLimit = Math.max(maxResults, 6);
+  const playlistResponses = await Promise.all(
+    playlistIds.map(async (playlistId) => {
+      const params = new URLSearchParams({
+        part: "snippet",
+        playlistId,
+        maxResults: String(perPlaylistLimit),
+        key: apiKey
+      });
 
-  const url = `https://www.googleapis.com/youtube/v3/playlistItems?${params.toString()}`;
+      const url = `https://www.googleapis.com/youtube/v3/playlistItems?${params.toString()}`;
 
-  let json: PlaylistItemsResponse;
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      console.warn(`[youtube] API responded with ${response.status} — returning empty list.`);
-      return [];
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          console.warn(
+            `[youtube] API responded with ${response.status} for playlist ${playlistId} — skipping this playlist.`
+          );
+          return [] as NonNullable<PlaylistItemsResponse["items"]>;
+        }
+        const json = (await response.json()) as PlaylistItemsResponse;
+        return json.items ?? [];
+      } catch (err) {
+        console.warn(`[youtube] Fetch failed for playlist ${playlistId}:`, err);
+        return [] as NonNullable<PlaylistItemsResponse["items"]>;
+      }
+    })
+  );
+
+  const dedupedVideos = new Map<
+    string,
+    {
+      title: string;
+      description: string;
+      thumbnail: string;
+      publishedAt?: string;
+      externalLink: string;
     }
-    json = (await response.json()) as PlaylistItemsResponse;
-  } catch (err) {
-    console.warn("[youtube] Fetch failed:", err);
-    return [];
-  }
+  >();
 
-  const items = json.items ?? [];
-
-  return items
-    .filter((item) => {
+  for (const items of playlistResponses) {
+    for (const item of items) {
       const videoId = item.snippet?.resourceId?.videoId;
       const title = item.snippet?.title?.toLowerCase() ?? "";
-      return Boolean(videoId) && title !== "private video" && title !== "deleted video";
+
+      if (!videoId || title === "private video" || title === "deleted video") {
+        continue;
+      }
+
+      if (dedupedVideos.has(videoId)) {
+        continue;
+      }
+
+      dedupedVideos.set(videoId, {
+        title: decodeHtmlEntities(item.snippet?.title?.trim() || "Untitled video"),
+        description: decodeHtmlEntities(
+          item.snippet?.description?.trim() || "New upload from The Overwhelmed Gamer."
+        ),
+        thumbnail: pickThumbnail(item.snippet?.thumbnails ?? {}),
+        publishedAt: item.snippet?.publishedAt,
+        externalLink: `https://www.youtube.com/watch?v=${videoId}`
+      });
+    }
+  }
+
+  return [...dedupedVideos.values()]
+    .sort((a, b) => {
+      const aTime = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+      const bTime = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+      return bTime - aTime;
     })
-    .map((item) => ({
-      title: decodeHtmlEntities(item.snippet?.title?.trim() || "Untitled video"),
-      description: decodeHtmlEntities(
-        item.snippet?.description?.trim() || "New upload from The Overwhelmed Gamer."
-      ),
-      thumbnail: pickThumbnail(item.snippet?.thumbnails ?? {}),
-      date: formatPublishedDate(item.snippet?.publishedAt),
+    .slice(0, maxResults)
+    .map((video) => ({
+      title: video.title,
+      description: video.description,
+      thumbnail: video.thumbnail,
+      date: formatPublishedDate(video.publishedAt),
       platform: "YouTube",
-      externalLink: `https://www.youtube.com/watch?v=${item.snippet?.resourceId?.videoId}`
+      externalLink: video.externalLink
     }));
 }
