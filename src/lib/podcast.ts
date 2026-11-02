@@ -1,6 +1,10 @@
 import type { MediaCardItem } from "../data/media";
 
 const DEFAULT_PODCAST_FEED_URL = "https://api.riverside.com/hosting/Rspwhe3G.rss";
+const FEED_REQUEST_HEADERS = {
+  accept: "application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.5",
+  "user-agent": "OverwhelmedGamerSiteBot/1.0 (+https://www.theoverwhelmedgamer.com)"
+};
 
 export const PODCAST_PLATFORM_LINKS = {
   spotify: import.meta.env.PODCAST_SPOTIFY_URL as string | undefined,
@@ -174,6 +178,23 @@ function extractAttribute(source: string, tagName: string, attributeName: string
   return match?.[1]?.trim();
 }
 
+function toAbsoluteUrl(input: string | undefined, baseUrl: string): string | undefined {
+  if (!input) return undefined;
+
+  try {
+    return new URL(input, baseUrl).toString();
+  } catch {
+    return undefined;
+  }
+}
+
+function extractFeedImage(xml: string, feedUrl: string): string {
+  const channelImageBlock = xml.match(/<image\b[\s\S]*?<\/image>/i)?.[0];
+  const channelImageUrl = channelImageBlock ? extractTagValue(channelImageBlock, "url") : undefined;
+  const rawFeedImage = extractAttribute(xml, "itunes:image", "href") ?? channelImageUrl;
+  return toAbsoluteUrl(rawFeedImage, feedUrl) ?? "/web-logo.png";
+}
+
 function slugify(input: string): string {
   return decodeHtmlEntities(input)
     .toLowerCase()
@@ -204,18 +225,20 @@ export async function getLatestPodcastEpisodes(maxResults = 3): Promise<MediaCar
   const feedUrl = import.meta.env.PODCAST_FEED_URL as string | undefined ?? DEFAULT_PODCAST_FEED_URL;
 
   try {
-    const response = await fetch(feedUrl);
+    const response = await fetch(feedUrl, {
+      headers: FEED_REQUEST_HEADERS,
+      cache: "no-store"
+    });
 
     if (!response.ok) {
-      console.warn(`[podcast] Feed request failed with ${response.status} — returning empty list.`);
+      console.warn(
+        `[podcast] Feed request failed (${response.status} ${response.statusText}) for ${feedUrl} — returning empty list.`
+      );
       return [];
     }
 
     const xml = await response.text();
-    const feedImage =
-      extractAttribute(xml, "itunes:image", "href") ??
-      extractTagValue(xml, "url") ??
-      "/web-logo.png";
+    const feedImage = extractFeedImage(xml, feedUrl);
 
     const items = Array.from(xml.matchAll(/<item\b[\s\S]*?<\/item>/gi))
       .map((match) => match[0])
@@ -242,9 +265,8 @@ export async function getLatestPodcastEpisodes(maxResults = 3): Promise<MediaCar
           extractTagValue(itemXml, "itunes:summary") ??
           "";
         const link = normalizeText(extractTagValue(itemXml, "link"));
-        const thumbnail =
-          extractAttribute(itemXml, "itunes:image", "href") ??
-          feedImage;
+        const thumbnailRaw = extractAttribute(itemXml, "itunes:image", "href") ?? feedImage;
+        const thumbnail = toAbsoluteUrl(thumbnailRaw, feedUrl) ?? "/web-logo.png";
         const publishedAt = extractTagValue(itemXml, "pubDate") ?? extractTagValue(itemXml, "dc:date");
         const audioUrl = extractAttribute(itemXml, "enclosure", "url");
         const slug = slugify(title);

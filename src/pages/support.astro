@@ -9,41 +9,92 @@ const siteUrl =
   "https://www.theoverwhelmedgamer.com";
 
 const supportPageUrl = `${siteUrl}/support`;
-const supportTitle = "Support The Overwhelmed Gamer";
+const supportTitle = "The Backlog Club | The Overwhelmed Gamer Membership";
+const supportHeading = "The Backlog Club";
+const supportSubtitle = "More Games Than Time. Let's Tackle That Backlog Together.";
 const supportDescription =
-  "Join the community, help shape future content, and support retro gaming reviews, podcasts, livestreams, and homebrew discoveries.";
+  "Join The Backlog Club, The Overwhelmed Gamer's community for gamers with more games than time. Enjoy video podcasts, behind-the-scenes content, and private Discord access.";
+
+const introParagraphs = [
+  "Welcome to The Backlog Club!",
+  "If you're anything like me, you've collected more games than you'll probably ever have time to finish.",
+  "That's what makes gaming fun, though. There's always another adventure waiting.",
+  "The Backlog Club is a little corner of The Overwhelmed Gamer community where we can share our gaming experiences, talk about our backlogs, and get to know each other beyond the regular videos and livestreams.",
+  "Membership is completely optional, and all my regular videos, livestreams, and audio podcasts will remain free.",
+  "But if you'd like to support the channel and get a few extras along the way, I'd love to have you join us."
+];
 
 const supportOptions = [
   {
-    title: "Patreon",
+    title: "Join on Patreon",
     description:
-      "Join through Patreon to become a Community Supporter and unlock private Discord access, member polls, game suggestions, podcast opportunities, and more. Starting at $1/month.",
-    ctaLabel: "Join on Patreon",
+      "Become a member of The Backlog Club through Patreon and unlock exclusive video podcasts, behind-the-scenes updates, private Discord access, and community perks.",
+    ctaLabel: "JOIN ON PATREON",
     href: "https://www.patreon.com/c/overwhelmedgamer/membership"
   },
   {
-    title: "YouTube Membership",
+    title: "Join on YouTube",
     description:
-      "Support directly on YouTube and get Community Supporter benefits while helping keep videos, podcasts, and streams coming.",
-    ctaLabel: "Join on YouTube",
+      "Join The Backlog Club directly on YouTube for exclusive video podcasts, behind-the-scenes updates, private Discord access, and YouTube membership badges.",
+    ctaLabel: "JOIN ON YOUTUBE",
     href: "https://www.youtube.com/channel/UCU5yHwDYrLbAPI2UuAOV0lw/join"
   },
   {
-    title: "Facebook Subscription",
+    title: "Subscribe on Facebook",
     description:
-      "Subscribe on Facebook to support the channel and connect with the same member-focused community experience.",
-    ctaLabel: "Subscribe on Facebook",
+      "Join The Backlog Club through Facebook and enjoy exclusive member content, behind-the-scenes updates, and access to our supporter community.",
+    ctaLabel: "SUBSCRIBE ON FACEBOOK",
     href: "https://www.facebook.com/OverwhelmedGamer/subscribe/"
+  }
+];
+
+const includedBenefits = [
+  {
+    title: "🎙️ Exclusive Video Podcasts",
+    description: [
+      "Watch video versions of The Overwhelmed Gamer Podcast, including conversations with guests, gaming discussions, and interviews.",
+      "The audio podcast remains free everywhere. The video versions are a special bonus for Backlog Club members.",
+      "These videos are recorded alongside the normal podcast and may have a more casual, unedited presentation."
+    ]
+  },
+  {
+    title: "🎬 Behind-the-Scenes Updates",
+    description: [
+      "Get casual, members-only updates about what's happening with The Overwhelmed Gamer.",
+      "These might include what I'm currently playing, upcoming video and review plans, games I'm thinking about tackling next, what's happening behind the scenes, and thoughts that haven't made it into a regular video.",
+      "These are informal, talking-head updates rather than heavily produced videos."
+    ]
+  },
+  {
+    title: "💬 Private Backlog Club Discord",
+    description: [
+      "Join a private area of The Overwhelmed Gamer Discord community where members can hang out, talk games, share their backlogs, discuss what they're playing, and connect with other gamers.",
+      "This is intended to be a welcoming community, not an obligation to participate."
+    ]
+  },
+  {
+    title: "🗳️ Member Polls and Game Suggestions",
+    description: [
+      "Occasionally help influence upcoming content by participating in polls, suggesting games, and sharing ideas for future videos, reviews, and streams.",
+      "Members can help shape the conversation, but final content decisions remain with the creator."
+    ]
+  },
+  {
+    title: "🎤 Podcast Questions and Opportunities",
+    description: [
+      "Submit questions for upcoming podcast conversations and occasionally have the opportunity to participate in future episodes as a guest panelist.",
+      "Participation opportunities are occasional and not guaranteed."
+    ]
   }
 ];
 ---
 
 <BaseLayout
-  title={`${supportTitle} | The Overwhelmed Gamer`}
+  title={supportTitle}
   description={supportDescription}
   canonicalUrl={supportPageUrl}
   ogType="website"
-  ogTitle={supportTitle}
+  ogTitle={supportHeading}
   ogDescription={supportDescription}
   ogImage="/web-logo.png"
 >
@@ -51,62 +102,46 @@ const supportOptions = [
 
   <main class="mx-auto flex w-full max-w-5xl flex-col gap-8 px-5 pb-16 pt-8 md:gap-10 md:px-8 md:pt-10">
     <section class="hero-panel space-y-4" aria-labelledby="support-page-title">
-      <p class="section-kicker">Community Supporter</p>
-      <h1 id="support-page-title" class="hero-title">Support The Overwhelmed Gamer</h1>
-      <p class="hero-copy max-w-3xl">{supportDescription}</p>
+      <p class="section-kicker">THE BACKLOG CLUB</p>
+      <h1 id="support-page-title" class="hero-title">{supportHeading}</h1>
+      <p class="font-display text-xl text-[var(--color-text)] sm:text-2xl">{supportSubtitle}</p>
+      <div class="space-y-3 max-w-3xl">
+        {
+          introParagraphs.map((paragraph) => (
+            <p class="hero-copy">{paragraph}</p>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="feature-card space-y-5" aria-labelledby="support-included-title">
+      <div class="space-y-2">
+        <h2 id="support-included-title" class="font-display text-2xl text-[var(--color-text)] sm:text-3xl">
+          What's Included
+        </h2>
+      </div>
+
+      <div class="grid gap-4 md:grid-cols-2">
+        {
+          includedBenefits.map((benefit) => (
+            <article class="support-option-card">
+              <h3 class="font-display text-xl text-[var(--color-text)]">{benefit.title}</h3>
+              <div class="mt-2 space-y-2">
+                {benefit.description.map((paragraph) => <p class="text-sm leading-relaxed text-[var(--color-muted)]">{paragraph}</p>)}
+              </div>
+            </article>
+          ))
+        }
+      </div>
     </section>
 
     <section class="feature-card space-y-5" aria-labelledby="support-tier-title">
       <div class="space-y-2">
         <h2 id="support-tier-title" class="font-display text-2xl text-[var(--color-text)] sm:text-3xl">
-          Community Supporter
+          Join The Backlog Club
         </h2>
         <p class="platform-summary text-sm leading-relaxed text-[var(--color-muted)]">
-          Join through Patreon, YouTube, Facebook, or Twitch and receive the same Community
-          Supporter benefits.
-        </p>
-        <div class="platform-links" aria-label="Community Supporter platforms">
-          <a
-            href="https://www.patreon.com/c/overwhelmedgamer/membership"
-            class="platform-link"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Join Community Supporter through Patreon"
-          >
-            <span class="platform-dot" aria-hidden="true">P</span>Patreon
-          </a>
-          <a
-            href="https://www.youtube.com/channel/UCU5yHwDYrLbAPI2UuAOV0lw/join"
-            class="platform-link"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Join Community Supporter through YouTube"
-          >
-            <span class="platform-dot" aria-hidden="true">Y</span>YouTube
-          </a>
-          <a
-            href="https://www.facebook.com/OverwhelmedGamer/subscribe/"
-            class="platform-link"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Join Community Supporter through Facebook"
-          >
-            <span class="platform-dot" aria-hidden="true">F</span>Facebook
-          </a>
-          <a
-            href="https://www.twitch.tv/theoverwhelmedgamer"
-            class="platform-link"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Join Community Supporter through Twitch"
-          >
-            <span class="platform-dot" aria-hidden="true">T</span>Twitch
-          </a>
-        </div>
-        <p class="text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">
-          Become a Community Supporter and get access to the private Discord, member polls, game
-          suggestion opportunities, podcast questions and shout-outs, behind-the-scenes updates, and
-          the chance to be invited onto future podcast episodes as a guest panelist.
+          Membership starts at around $1/month on participating platforms. Pricing may vary depending on where you subscribe.
         </p>
       </div>
 
@@ -131,25 +166,97 @@ const supportOptions = [
 
       <div class="support-note space-y-2">
         <p class="text-sm text-[var(--color-muted)]">
-          No matter where you subscribe&mdash;Patreon, YouTube, Facebook, or Twitch&mdash;you'll receive access
-          to the same Community Supporter community, including private Discord access, member polls,
-          game suggestions, podcast participation opportunities, and community perks.
-        </p>
-        <p class="text-sm text-[var(--color-muted)]">
-          Twitch subscribers can request Community Supporter access through Discord and receive the
-          same community benefits.
+          Twitch subscriptions are also part of The Backlog Club. If you subscribe on Twitch, you can request access to The Backlog Club's shared community benefits through Discord.
         </p>
         <a
           href="https://www.twitch.tv/theoverwhelmedgamer"
           class="twitch-link"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Stream with us on Twitch"
+          aria-label="Subscribe and stream with us on Twitch"
         >
-          Stream with us on Twitch
+          Subscribe and stream with us on Twitch
         </a>
       </div>
     </section>
+
+    <section class="feature-card space-y-4" aria-labelledby="cross-platform-title">
+      <h2 id="cross-platform-title" class="font-display text-2xl text-[var(--color-text)] sm:text-3xl">
+        One Club. Multiple Ways to Join.
+      </h2>
+      <p class="text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">
+        Whether you join through YouTube, Facebook, Patreon, or Twitch, you're part of The Backlog Club.
+      </p>
+      <p class="text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">
+        My goal is to give everyone the same core membership experience, regardless of where they choose to support the channel.
+      </p>
+      <p class="text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">
+        Some platforms may offer additional features, like YouTube membership badges, but the community and core exclusive content are intended to be shared across all membership platforms.
+      </p>
+      <p class="text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">
+        For certain cross-platform perks, you may need to connect your account or contact us through Discord so we can confirm access.
+      </p>
+    </section>
+
+    <section class="feature-card space-y-4" aria-labelledby="support-reassurance-title">
+      <h2 id="support-reassurance-title" class="font-display text-2xl text-[var(--color-text)] sm:text-3xl">
+        The Games Aren't Going Behind a Paywall.
+      </h2>
+      <p class="text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">
+        Don't worry! My regular YouTube videos, livestreams, game reviews, gameplay content, and audio podcasts are staying free.
+      </p>
+      <p class="text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">
+        The Backlog Club is simply a way to support what I'm creating, enjoy a few extras, and become a little more involved in the community.
+      </p>
+      <p class="text-sm leading-relaxed text-[var(--color-muted)] sm:text-base">
+        Whether you're a member or just stopping by to watch a video, I'm glad you're here.
+      </p>
+    </section>
+
+    <section class="feature-card space-y-4" aria-labelledby="platform-links-title">
+      <h2 id="platform-links-title" class="font-display text-2xl text-[var(--color-text)] sm:text-3xl">
+        Backlog Club Platforms
+      </h2>
+      <div class="platform-links" aria-label="Backlog Club platforms">
+        <a
+          href="https://www.patreon.com/c/overwhelmedgamer/membership"
+          class="platform-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Join The Backlog Club through Patreon"
+        >
+          <span class="platform-dot" aria-hidden="true">P</span>Patreon
+        </a>
+        <a
+          href="https://www.youtube.com/channel/UCU5yHwDYrLbAPI2UuAOV0lw/join"
+          class="platform-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Join The Backlog Club through YouTube"
+        >
+          <span class="platform-dot" aria-hidden="true">Y</span>YouTube
+        </a>
+        <a
+          href="https://www.facebook.com/OverwhelmedGamer/subscribe/"
+          class="platform-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Join The Backlog Club through Facebook"
+        >
+          <span class="platform-dot" aria-hidden="true">F</span>Facebook
+        </a>
+        <a
+          href="https://www.twitch.tv/theoverwhelmedgamer"
+          class="platform-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Join The Backlog Club through Twitch"
+        >
+          <span class="platform-dot" aria-hidden="true">T</span>Twitch
+        </a>
+      </div>
+    </section>
+
   </main>
 
   <SiteFooter brand={siteMeta.title} />
