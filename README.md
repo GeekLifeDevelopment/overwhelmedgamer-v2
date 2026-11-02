@@ -46,6 +46,9 @@ Copy `.env.example` to `.env` and fill values:
 	- Default is 3
 - `YOUTUBE_CACHE_TTL_MINUTES`
 	- Default is 45 minutes
+- `PODCAST_FEED_URL`
+	- Optional RSS override for podcast episodes.
+	- If this URL fails or times out at build time, the site automatically retries and then falls back to the Riverside default feed (`https://api.riverside.com/hosting/Rspwhe3G.rss`).
 
 If any required YouTube variable is missing or the API request fails, homepage sections fall back to local placeholder data in `src/data/media.ts`.
 
