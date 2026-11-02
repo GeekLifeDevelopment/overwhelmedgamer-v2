@@ -195,6 +195,49 @@ function extractFeedImage(xml: string, feedUrl: string): string {
   return toAbsoluteUrl(rawFeedImage, feedUrl) ?? "/web-logo.png";
 }
 
+function getCandidateFeedUrls(): string[] {
+  const fromEnv = (import.meta.env.PODCAST_FEED_URL as string | undefined)?.trim();
+  return [fromEnv, DEFAULT_PODCAST_FEED_URL].filter((value, index, all): value is string => {
+    if (!value) return false;
+    return all.indexOf(value) === index;
+  });
+}
+
+async function fetchFeedXml(feedUrl: string): Promise<string | null> {
+  const request = new Request(feedUrl, {
+    headers: FEED_REQUEST_HEADERS,
+    cache: "no-store"
+  });
+
+  const MAX_ATTEMPTS = 3;
+  const REQUEST_TIMEOUT_MS = 10_000;
+
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+    try {
+      const response = await fetch(request, { signal: controller.signal });
+      if (!response.ok) {
+        console.warn(
+          `[podcast] Feed request failed (${response.status} ${response.statusText}) for ${feedUrl} on attempt ${attempt}/${MAX_ATTEMPTS}.`
+        );
+      } else {
+        return await response.text();
+      }
+    } catch (error) {
+      console.warn(
+        `[podcast] Feed request errored for ${feedUrl} on attempt ${attempt}/${MAX_ATTEMPTS}:`,
+        error
+      );
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  return null;
+}
+
 function slugify(input: string): string {
   return decodeHtmlEntities(input)
     .toLowerCase()
@@ -222,23 +265,29 @@ function formatPublishedDate(dateInput?: string): string {
 }
 
 export async function getLatestPodcastEpisodes(maxResults = 3): Promise<MediaCardItem[]> {
-  const feedUrl = import.meta.env.PODCAST_FEED_URL as string | undefined ?? DEFAULT_PODCAST_FEED_URL;
+  const candidateFeedUrls = getCandidateFeedUrls();
 
   try {
-    const response = await fetch(feedUrl, {
-      headers: FEED_REQUEST_HEADERS,
-      cache: "no-store"
-    });
+    let selectedFeedUrl: string | undefined;
+    let xml: string | null = null;
 
-    if (!response.ok) {
-      console.warn(
-        `[podcast] Feed request failed (${response.status} ${response.statusText}) for ${feedUrl} — returning empty list.`
-      );
-      return [];
+    for (const candidate of candidateFeedUrls) {
+      const responseXml = await fetchFeedXml(candidate);
+      if (!responseXml) continue;
+
+      if (!xml || responseXml.includes("<item")) {
+        selectedFeedUrl = candidate;
+        xml = responseXml;
+      }
+
+      if (responseXml.includes("<item")) break;
     }
 
-    const xml = await response.text();
-    const feedImage = extractFeedImage(xml, feedUrl);
+    if (!xml || !selectedFeedUrl) {
+      console.warn("[podcast] All feed URL attempts failed — returning empty list.");
+      return [];
+    }
+    const feedImage = extractFeedImage(xml, selectedFeedUrl);
 
     const items = Array.from(xml.matchAll(/<item\b[\s\S]*?<\/item>/gi))
       .map((match) => match[0])
@@ -266,7 +315,7 @@ export async function getLatestPodcastEpisodes(maxResults = 3): Promise<MediaCar
           "";
         const link = normalizeText(extractTagValue(itemXml, "link"));
         const thumbnailRaw = extractAttribute(itemXml, "itunes:image", "href") ?? feedImage;
-        const thumbnail = toAbsoluteUrl(thumbnailRaw, feedUrl) ?? "/web-logo.png";
+        const thumbnail = toAbsoluteUrl(thumbnailRaw, selectedFeedUrl) ?? "/web-logo.png";
         const publishedAt = extractTagValue(itemXml, "pubDate") ?? extractTagValue(itemXml, "dc:date");
         const audioUrl = extractAttribute(itemXml, "enclosure", "url");
         const slug = slugify(title);
@@ -286,7 +335,7 @@ export async function getLatestPodcastEpisodes(maxResults = 3): Promise<MediaCar
           slug,
           audioUrl,
           excerpt: notesText,
-          sourceLink: link || feedUrl,
+          sourceLink: link || selectedFeedUrl,
           summary,
           notesText,
           notesHtml,
