@@ -128,6 +128,21 @@ const organizationSchema = {
           />
         </div>
 
+        <!-- Game title: optional for non-game requests, useful for review submissions -->
+        <div class="form-group">
+          <label for="game-title" class="form-label">
+            Game Title <span class="text-sm text-[var(--color-text-muted)]">(for game submissions; optional)</span>
+          </label>
+          <input
+            type="text"
+            id="game-title"
+            name="game_title"
+            maxLength="220"
+            placeholder="Name of the game you'd like me to try"
+            class="form-input"
+          />
+        </div>
+
         <!-- Website/Game Link -->
         <div class="form-group">
           <label for="website" class="form-label">
